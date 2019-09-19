@@ -1,0 +1,26 @@
+16:44:25 **** Incremental Build of configuration Debug for project Echo_Client_0918 ****
+make all 
+Building file: ../src/Echo_Client_0918.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Echo_Client_0918.d" -MT"src/Echo_Client_0918.o" -o "src/Echo_Client_0918.o" "../src/Echo_Client_0918.cpp"
+In file included from ../src/Echo_Client_0918.cpp:16:0:
+../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+../src/Echo_Client_0918.cpp: In function ‘int main(int, char**)’:
+../src/Echo_Client_0918.cpp:47:34: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   error_handling("socket() error");
+                                  ^
+../src/Echo_Client_0918.cpp:57:36: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   error_handling("connect() error!");
+                                    ^
+Finished building: ../src/Echo_Client_0918.cpp
+ 
+Building target: Echo_Client_0918
+Invoking: GCC C++ Linker
+g++  -o "Echo_Client_0918"  ./src/Echo_Client_0918.o   
+Finished building target: Echo_Client_0918
+ 
+
+16:44:25 Build Finished. 0 errors, 3 warnings. (took 463ms)
+

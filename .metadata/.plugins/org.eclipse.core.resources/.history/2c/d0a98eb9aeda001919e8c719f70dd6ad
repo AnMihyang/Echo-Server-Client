@@ -1,0 +1,18 @@
+/*
+ * CEpollMng.cpp
+ *
+ *  Created on: 2019. 9. 19.
+ *      Author: mihyang
+ */
+
+#include "CEpollMng.h"
+
+CEpollMng::CEpollMng() {
+	// TODO Auto-generated constructor stub
+
+}
+
+CEpollMng::~CEpollMng() {
+	// TODO Auto-generated destructor stub
+}
+

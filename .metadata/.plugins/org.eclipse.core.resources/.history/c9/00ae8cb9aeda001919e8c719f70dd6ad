@@ -1,0 +1,17 @@
+/*
+ * CUserMng.h
+ *
+ *  Created on: 2019. 9. 19.
+ *      Author: mihyang
+ */
+
+#ifndef CUSERMNG_H_
+#define CUSERMNG_H_
+
+class CUserMng {
+public:
+	CUserMng();
+	virtual ~CUserMng();
+};
+
+#endif /* CUSERMNG_H_ */

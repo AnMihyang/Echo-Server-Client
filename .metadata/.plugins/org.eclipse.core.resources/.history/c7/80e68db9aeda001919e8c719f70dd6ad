@@ -1,0 +1,18 @@
+/*
+ * CUserMng.cpp
+ *
+ *  Created on: 2019. 9. 19.
+ *      Author: mihyang
+ */
+
+#include "CUserMng.h"
+
+CUserMng::CUserMng() {
+	// TODO Auto-generated constructor stub
+
+}
+
+CUserMng::~CUserMng() {
+	// TODO Auto-generated destructor stub
+}
+

@@ -1,0 +1,17 @@
+/*
+ * CEpollMng.h
+ *
+ *  Created on: 2019. 9. 19.
+ *      Author: mihyang
+ */
+
+#ifndef CEPOLLMNG_H_
+#define CEPOLLMNG_H_
+
+class CEpollMng {
+public:
+	CEpollMng();
+	virtual ~CEpollMng();
+};
+
+#endif /* CEPOLLMNG_H_ */
