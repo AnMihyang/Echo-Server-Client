@@ -1,21 +1,15 @@
 //============================================================================
-// Name        : Echo_Server_0918.cpp
+// Name        : Echo_Server_modify.cpp
 // Author      : 
 // Version     :
 // Copyright   : Your copyright notice
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
-//1차 개발 발표 이후 구조 수정
-#include "CUserMng.h"
 #include <iostream>
-
 using namespace std;
 
 int main() {
-	cout << "Server Open" << endl;
-	CUserMng cUserMng;
-	cUserMng.ServerHandling();
-
+	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
 	return 0;
 }

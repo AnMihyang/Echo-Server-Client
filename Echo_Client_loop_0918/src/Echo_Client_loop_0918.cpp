@@ -28,7 +28,6 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-	int loopCnt = 0;
 	int sock;
 	char message[BUF_SIZE];
 
