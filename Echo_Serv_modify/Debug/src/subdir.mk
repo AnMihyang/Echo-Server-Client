@@ -7,19 +7,22 @@ CPP_SRCS += \
 ../src/CEpollMng.cpp \
 ../src/CUser.cpp \
 ../src/CUserMng.cpp \
-../src/Echo_Serv_modify.cpp 
+../src/CircularBuf.cpp \
+../src/Echo_Server_modify.cpp 
 
 OBJS += \
 ./src/CEpollMng.o \
 ./src/CUser.o \
 ./src/CUserMng.o \
-./src/Echo_Serv_modify.o 
+./src/CircularBuf.o \
+./src/Echo_Server_modify.o 
 
 CPP_DEPS += \
 ./src/CEpollMng.d \
 ./src/CUser.d \
 ./src/CUserMng.d \
-./src/Echo_Serv_modify.d 
+./src/CircularBuf.d \
+./src/Echo_Server_modify.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
