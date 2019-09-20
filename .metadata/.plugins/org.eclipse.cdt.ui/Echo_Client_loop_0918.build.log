@@ -1,4 +1,4 @@
-16:44:14 **** Incremental Build of configuration Debug for project Echo_Client_loop_0918 ****
+09:39:53 **** Build of configuration Debug for project Echo_Client_loop_0918 ****
 make all 
 Building file: ../src/Echo_Client_loop_0918.cpp
 Invoking: GCC C++ Compiler
@@ -8,16 +8,13 @@ In file included from ../src/Echo_Client_loop_0918.cpp:9:0:
  #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
                   ^
 ../src/Echo_Client_loop_0918.cpp: In function ‘int main(int, char**)’:
-../src/Echo_Client_loop_0918.cpp:51:34: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+../src/Echo_Client_loop_0918.cpp:50:34: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
    error_handling("socket() error");
                                   ^
-../src/Echo_Client_loop_0918.cpp:61:36: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+../src/Echo_Client_loop_0918.cpp:60:36: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
    error_handling("connect() error!");
                                     ^
-../src/Echo_Client_loop_0918.cpp:31:6: warning: unused variable ‘loopCnt’ [-Wunused-variable]
-  int loopCnt = 0;
-      ^~~~~~~
-../src/Echo_Client_loop_0918.cpp:33:7: warning: unused variable ‘message’ [-Wunused-variable]
+../src/Echo_Client_loop_0918.cpp:32:7: warning: unused variable ‘message’ [-Wunused-variable]
   char message[BUF_SIZE];
        ^~~~~~~
 Finished building: ../src/Echo_Client_loop_0918.cpp
@@ -28,5 +25,5 @@ g++  -o "Echo_Client_loop_0918"  ./src/Echo_Client_loop_0918.o
 Finished building target: Echo_Client_loop_0918
  
 
-16:44:15 Build Finished. 0 errors, 5 warnings. (took 512ms)
+09:39:53 Build Finished. 0 errors, 4 warnings. (took 459ms)
 

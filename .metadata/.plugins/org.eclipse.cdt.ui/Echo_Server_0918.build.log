@@ -1,15 +1,15 @@
-16:27:46 **** Incremental Build of configuration Debug for project Echo_Server_0918 ****
+09:39:53 **** Build of configuration Debug for project Echo_Server_0918 ****
 make all 
-Building file: ../src/CUserMng.cpp
+Building file: ../src/Echo_Server_0918.cpp
 Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUserMng.d" -MT"src/CUserMng.o" -o "src/CUserMng.o" "../src/CUserMng.cpp"
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Echo_Server_0918.d" -MT"src/Echo_Server_0918.o" -o "src/Echo_Server_0918.o" "../src/Echo_Server_0918.cpp"
 In file included from ../src/CUser.h:11:0,
                  from ../src/CUserMng.h:13,
-                 from ../src/CUserMng.cpp:8:
+                 from ../src/Echo_Server_0918.cpp:10:
 ../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
  #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
                   ^
-Finished building: ../src/CUserMng.cpp
+Finished building: ../src/Echo_Server_0918.cpp
  
 Building target: Echo_Server_0918
 Invoking: GCC C++ Linker
@@ -17,5 +17,5 @@ g++  -o "Echo_Server_0918"  ./src/CEpollMng.o ./src/CUser.o ./src/CUserMng.o ./s
 Finished building target: Echo_Server_0918
  
 
-16:27:47 Build Finished. 0 errors, 1 warnings. (took 461ms)
+09:39:54 Build Finished. 0 errors, 1 warnings. (took 459ms)
 
