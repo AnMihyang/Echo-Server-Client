@@ -23,17 +23,15 @@
 #define CMD_USER_PRINT_RESULT 0x0A
 #define CMD_USER_ERR 0x0B
 
-#define MAX_PACKET_SIZE 65000
+#define MAX_PACKET_SIZE 8096
 
 #pragma pack(push, 1)	//1byte 정렬
 
 typedef struct Milestone_Packet
 {
 	char head[4]={'A','A','1','1'};
-//	unsigned short sock_ID;
-//	char user_ID[16];
 	unsigned short cmd;
-//	int size;
+	int size;
 	char data[MAX_PACKET_SIZE];
 	char tail[4]={'1','1','A','A'};
 }PACKET;

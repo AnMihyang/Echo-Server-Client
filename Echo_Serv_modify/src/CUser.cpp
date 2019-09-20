@@ -53,6 +53,12 @@ int CUser::RecvData(int fd, int cUserNum, list<string> *dataList) {
 	return 0;
 }
 
+int CUser::ParsingData()
+{
+	if(CheckPacket() == ERR)
+		return ERR;
+}
+
 void CUser::SendData(PACKET pack)
 {
 	switch (pack.cmd) {
@@ -96,5 +102,22 @@ void CUser::SendData(PACKET pack)
 			cout << "[Client " << m_clntSock << "] Send: " << pack.cmd << ", " << pack.data << endl;
 			puts("[ERROR] request error");
 	} //switch
+}
 
+//큐에 저장된 패킷 데이터 정상인지 확인
+int CUser::CheckPacket()
+{
+	if(strcmp(queue.pack[queue.front]->head, "AA11"))
+		return ERR;
+
+	if(strcmp(queue.pack[queue.front]->tail, "11AA"))
+		return ERR;
+
+	if(queue.pack[queue.front]->cmd <= 0 || queue.pack[queue.front]->cmd > 11)
+		return ERR;
+
+	if(queue.pack[queue.front]->size <= 0)
+		return ERR;
+
+	return 0;
 }

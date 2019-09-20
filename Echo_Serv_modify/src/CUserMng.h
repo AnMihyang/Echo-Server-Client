@@ -31,10 +31,7 @@ public:
 	int Connect_Client();				// Client 연결
 	void Close_Client(int *fd);			// Client 종료
 	static void * WorkerThread(void *arg);				//Packet send/parsing 스레드
-	static void * UserCheckThread(void *arg);		//클라이언트 연결 상태 확인 스레드
-
-	int RecvData(int fd, int cUserNum, list<string> *dataList);
-	void SendData(PACKET pack);
+	static void * UserCheckThread(void *arg);			//클라이언트 연결 상태 확인 스레드
 };
 
 

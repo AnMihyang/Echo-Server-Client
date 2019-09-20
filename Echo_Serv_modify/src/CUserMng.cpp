@@ -111,13 +111,14 @@ void CUserMng::Close_Client(int *fd)
 	cout << "[Close] client: " << *fd << endl;
 }
 
-
+//10분마다 현재 접속중인 유저(client) 출력
 void * CUserMng::UserCheckThread(void * arg)
 {
 	sleep(600);
 	return NULL;
 }
 
+//계속 돌면서 패킷 pasing/send 하기
 void * CUserMng::WorkerThread(void *arg)
 {
 	CUserMng *cUserMng = (CUserMng *)arg;

@@ -25,8 +25,9 @@ public:
 	CUser();
 	virtual ~CUser();
 	int RecvData(int fd, int cUserNum, list<string> *dataList);
+	int ParsingData();
 	void SendData(PACKET pack);
-
+	int CheckPacket();
 };
 
 #endif /* CUSER_H_ */

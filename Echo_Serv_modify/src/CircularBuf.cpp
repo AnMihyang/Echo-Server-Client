@@ -27,7 +27,9 @@ int CircularBuf::Enqueue(Queue *queue, PACKET recvPack)
 {
 	memcpy(queue->pack[queue->rear], &recvPack, sizeof(recvPack));
 
-	IsFull_Queue(queue);
+	if (IsFull_Queue(queue))
+		queue->front = NEXT(queue->front);
+
 	queue->rear = NEXT(queue->rear);
 	return 0;
 }
@@ -55,11 +57,14 @@ int CircularBuf::IsEmpty_Queue(Queue *queue)
 }
 
 //Queue가 꽉 찬 상태인지 확인
-void CircularBuf::IsFull_Queue(Queue *queue)
+bool CircularBuf::IsFull_Queue(Queue *queue)
 {
 	//다음에 저장할 위치(Next(rear))가 꺼낼 위치(front)와 같으면 Full
 	if(NEXT(queue->rear) == queue->front)
 	{
 		cout << "[NOTICE] Circular buffer full" << endl;
+		return true;
 	}
+	else
+		return false;
 }

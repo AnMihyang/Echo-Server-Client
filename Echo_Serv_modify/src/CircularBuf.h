@@ -21,7 +21,7 @@ public:
 	CircularBuf();
 	virtual ~CircularBuf();
 	int IsEmpty_Queue(Queue *queue);
-	void IsFull_Queue(Queue *queue);
+	bool IsFull_Queue(Queue *queue);
 	int Enqueue(Queue *queue, PACKET recvPack);
 	int Dequeue(Queue *queue);
 };
