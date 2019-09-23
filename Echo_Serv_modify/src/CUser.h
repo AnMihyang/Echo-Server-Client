@@ -19,14 +19,18 @@ class CUser {
 private:
 	Queue queue;
 	int m_strlen;
-	int m_clntSock;
 	CircularBuf m_CircularBuf;
+public:
+	int m_clntSock;
+	bool m_clntConnect;
+
 public:
 	CUser();
 	virtual ~CUser();
 	int RecvData(int fd, int cUserNum, list<string> *dataList);
+	int QueueCheck();
 	int ParsingData();
-	void SendData(PACKET pack);
+	int SendData(PACKET pack);
 	int CheckPacket();
 };
 

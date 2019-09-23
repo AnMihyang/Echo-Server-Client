@@ -9,7 +9,7 @@
 #ifndef PACKETDEFINE_H_
 #define PACKETDEFINE_H_
 
-//#include <string>
+#include <stdio.h>
 
 #define CMD_USER_LOGIN_REQ 0x01
 #define CMD_USER_LOGIN_RESULT 0x02
@@ -29,11 +29,11 @@
 
 typedef struct Milestone_Packet
 {
-	char head[4]={'A','A','1','1'};
+	char head[5] = {"AA11"};
 	unsigned short cmd;
 	int size;
 	char data[MAX_PACKET_SIZE];
-	char tail[4]={'1','1','A','A'};
+	char tail[5]={"11AA"};
 }PACKET;
 
 #pragma pack(pop);	//정렬 설정을 이전 상태(기본값)로 되돌림

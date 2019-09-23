@@ -10,8 +10,10 @@
 
 #include "PacketDefine.h"
 
+#define QUEUE_SIZE 50
+
 typedef struct Queue_Info {
-	PACKET *pack[50];
+	PACKET *pack[QUEUE_SIZE];
 	int front;			// 데이터를 꺼낼 위치를 가리키는 인덱스
 	int rear;			// 데이터를 저장할 위치를 가리키는 인덱스
 } Queue;

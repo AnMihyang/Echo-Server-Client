@@ -12,14 +12,12 @@
 #include <unistd.h>
 
 CEpollMng::CEpollMng() {
-	// TODO Auto-generated constructor stub
 	m_serv_sock = 0;
 	m_epfd = 0;
 	m_events = nullptr;
 }
 
 CEpollMng::~CEpollMng() {
-	// TODO Auto-generated destructor stub
 	free(m_events);
 }
 

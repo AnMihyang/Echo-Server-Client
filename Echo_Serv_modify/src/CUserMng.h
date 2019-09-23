@@ -11,6 +11,7 @@
 #include "CEpollMng.h"
 #include "CUser.h"
 #include "PacketDefine.h"
+#include <pthread.h>
 
 #define MAX_CLIENT 100
 
@@ -24,6 +25,9 @@ private:
 	PACKET m_pack;
 
 	list<string> dataList;
+
+	pthread_t tID;
+
 public:
 	CUserMng();
 	virtual ~CUserMng();

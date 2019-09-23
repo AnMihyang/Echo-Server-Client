@@ -11,16 +11,17 @@
 #include <sys/types.h>
 #include <string.h>
 
+
 using namespace std;
 
 CUserMng::CUserMng() {
 	m_clntSock = 0;
 	m_adr_sz = 0;
 	m_events = nullptr;
+	tID = 0;
 }
 
 CUserMng::~CUserMng() {
-	// TODO Auto-generated destructor stub
 }
 
 void CUserMng::Server_Handling()
@@ -30,6 +31,14 @@ void CUserMng::Server_Handling()
 	SetSocket();			//소켓 설정
 
 	m_events = EpollCreate();
+
+	if(pthread_create(&tID, NULL, &CUserMng::WorkerThread, (void *)this) != 0)
+	{
+		puts("[ERROR] pthread_create() error");
+		close(m_serv_sock);
+		EpollClose();
+	}
+	pthread_detach(tID);
 
 	while (1)
 	{
@@ -42,7 +51,7 @@ void CUserMng::Server_Handling()
 
 		for (int i = 0; i < event_cnt; i++)
 		{
-//			m_clnt = m_events[i].data.fd;
+			m_clntSock = m_events[i].data.fd;
 
 			if (m_events[i].data.fd == m_serv_sock)
 			{
@@ -53,6 +62,8 @@ void CUserMng::Server_Handling()
 					//clntSock배열에 client socket 부여하기
 					if(m_clntSocks[j] == 0) {
 						m_clntSocks[j] = m_clntSock;
+						m_CUser[j].m_clntSock = m_clntSock;
+						m_CUser[j].m_clntConnect = true;
 						break;
 					}
 					if(j == MAX_CLIENT-1)
@@ -71,6 +82,8 @@ void CUserMng::Server_Handling()
 					if (m_clntSocks[j] == m_events[i].data.fd)
 						if (m_CUser[j].RecvData(m_events[i].data.fd, j, &dataList) == ERR)
 						{
+							m_CUser[j].m_clntConnect = false;
+							m_CUser[j].m_clntSock = 0;
 							Close_Client(&m_events[i].data.fd);
 							m_clntSocks[j] = 0;
 						}
@@ -118,9 +131,23 @@ void * CUserMng::UserCheckThread(void * arg)
 	return NULL;
 }
 
-//계속 돌면서 패킷 pasing/send 하기
+//계속 돌면서 패킷 parsing/send 하기
 void * CUserMng::WorkerThread(void *arg)
 {
 	CUserMng *cUserMng = (CUserMng *)arg;
-	return NULL;
+
+	while(1)
+	{
+		for(int i = 0; i < MAX_CLIENT; ++i)
+		{
+			if(cUserMng->m_CUser[i].m_clntConnect == true)
+			{
+				if(cUserMng->m_CUser[i].QueueCheck() != ERR)
+					if(cUserMng->m_CUser[i].ParsingData() == ERR)
+						puts("[ERROR] send() error");
+			}
+			usleep(1000);
+		}
+		usleep(300000);
+	}
 }

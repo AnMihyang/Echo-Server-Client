@@ -10,26 +10,21 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define QUEUE_SIZE 20
 #define NEXT(index) ((index+1)%QUEUE_SIZE)	//다음 인덱스를 가리키는 매크로 함수
 
 using namespace std;
 
 CircularBuf::CircularBuf() {
-	// TODO Auto-generated constructor stub
 }
 
 CircularBuf::~CircularBuf() {
-	// TODO Auto-generated destructor stub
 }
 
 int CircularBuf::Enqueue(Queue *queue, PACKET recvPack)
 {
 	memcpy(queue->pack[queue->rear], &recvPack, sizeof(recvPack));
-
 	if (IsFull_Queue(queue))
 		queue->front = NEXT(queue->front);
-
 	queue->rear = NEXT(queue->rear);
 	return 0;
 }
