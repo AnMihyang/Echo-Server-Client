@@ -1,4 +1,4 @@
-09:46:42 **** Build of configuration Debug for project Echo_Serv_modify ****
+17:08:36 **** Incremental Build of configuration Debug for project Echo_Serv_modify ****
 make all 
 Building file: ../src/CEpollMng.cpp
 Invoking: GCC C++ Compiler
@@ -8,49 +8,51 @@ Finished building: ../src/CEpollMng.cpp
 Building file: ../src/CUser.cpp
 Invoking: GCC C++ Compiler
 g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
+In file included from ../src/CUser.h:11:0,
+                 from ../src/CUser.cpp:8:
+../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
 Finished building: ../src/CUser.cpp
  
 Building file: ../src/CUserMng.cpp
 Invoking: GCC C++ Compiler
 g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUserMng.d" -MT"src/CUserMng.o" -o "src/CUserMng.o" "../src/CUserMng.cpp"
-In file included from ../src/CUserMng.h:13:0,
+In file included from ../src/CUser.h:11:0,
+                 from ../src/CUserMng.h:12,
                  from ../src/CUserMng.cpp:8:
 ../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
  #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
                   ^
-../src/CUserMng.cpp: In member function ‘void CUserMng::Server_Handling()’:
-../src/CUserMng.cpp:31:2: error: ‘epoll_event* CEpollMng::m_events’ is private within this context
-  m_events = EpollCreate();
-  ^~~~~~~~
-In file included from ../src/CUserMng.h:11:0,
-                 from ../src/CUserMng.cpp:8:
-../src/CEpollMng.h:26:22: note: declared private here
-  struct epoll_event *m_events;
-                      ^~~~~~~~
-../src/CUserMng.cpp:45:8: error: ‘epoll_event* CEpollMng::m_events’ is private within this context
-    if (m_events[i].data.fd == m_serv_sock)
-        ^~~~~~~~
-In file included from ../src/CUserMng.h:11:0,
-                 from ../src/CUserMng.cpp:8:
-../src/CEpollMng.h:26:22: note: declared private here
-  struct epoll_event *m_events;
-                      ^~~~~~~~
-../src/CUserMng.cpp:69:27: error: ‘epoll_event* CEpollMng::m_events’ is private within this context
-      if (m_clntSock[j] == m_events[i].data.fd)
-                           ^~~~~~~~
-In file included from ../src/CUserMng.h:11:0,
-                 from ../src/CUserMng.cpp:8:
-../src/CEpollMng.h:26:22: note: declared private here
-  struct epoll_event *m_events;
-                      ^~~~~~~~
-../src/CUserMng.cpp:72:22: error: ‘epoll_event* CEpollMng::m_events’ is private within this context
-        Close_Client(&m_events[i].data.fd);
-                      ^~~~~~~~
-In file included from ../src/CUserMng.h:11:0,
-                 from ../src/CUserMng.cpp:8:
-../src/CEpollMng.h:26:22: note: declared private here
-  struct epoll_event *m_events;
-                      ^~~~~~~~
-make: *** [src/CUserMng.o] Error 1
-src/subdir.mk:27: recipe for target 'src/CUserMng.o' failed
-"make all" terminated with exit code 2. Build might be incomplete.
+../src/CUserMng.cpp: In static member function ‘static void* CUserMng::WorkerThread(void*)’:
+../src/CUserMng.cpp:123:12: warning: unused variable ‘cUserMng’ [-Wunused-variable]
+  CUserMng *cUserMng = (CUserMng *)arg;
+            ^~~~~~~~
+Finished building: ../src/CUserMng.cpp
+ 
+Building file: ../src/CircularBuf.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CircularBuf.d" -MT"src/CircularBuf.o" -o "src/CircularBuf.o" "../src/CircularBuf.cpp"
+In file included from ../src/CircularBuf.h:11:0,
+                 from ../src/CircularBuf.cpp:8:
+../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+Finished building: ../src/CircularBuf.cpp
+ 
+Building file: ../src/Echo_Server_modify.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Echo_Server_modify.d" -MT"src/Echo_Server_modify.o" -o "src/Echo_Server_modify.o" "../src/Echo_Server_modify.cpp"
+In file included from ../src/CUser.h:11:0,
+                 from ../src/CUserMng.h:12,
+                 from ../src/Echo_Server_modify.cpp:9:
+../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+Finished building: ../src/Echo_Server_modify.cpp
+ 
+Building target: Echo_Serv_modify
+Invoking: GCC C++ Linker
+g++  -o "Echo_Serv_modify"  ./src/CEpollMng.o ./src/CUser.o ./src/CUserMng.o ./src/CircularBuf.o ./src/Echo_Server_modify.o   
+Finished building target: Echo_Serv_modify
+ 
