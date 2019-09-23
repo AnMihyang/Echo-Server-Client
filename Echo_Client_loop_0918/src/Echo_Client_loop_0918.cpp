@@ -6,6 +6,8 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
+// ----Client 명령 랜덤 반복----
+
 #include "PacketDefine.h"
 #include <iostream>
 #include <list>

@@ -6,6 +6,8 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
+// ----1차 개발 발표 코드----
+
 #include "CUserMng.h"
 #include "PacketDefine.h"
 #include <iostream>

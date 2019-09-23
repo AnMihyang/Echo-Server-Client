@@ -56,3 +56,138 @@ Invoking: GCC C++ Linker
 g++  -o "Echo_Serv_modify"  ./src/CEpollMng.o ./src/CUser.o ./src/CUserMng.o ./src/CircularBuf.o ./src/Echo_Server_modify.o   
 Finished building target: Echo_Serv_modify
  
+09:31:31 **** Incremental Build of configuration Debug for project Echo_Client_0918 ****
+make all 
+make: 'all'을(를) 위해 할 일이 없습니다.
+09:31:31 **** Incremental Build of configuration Debug for project Echo_Client_loop_0918 ****
+make all 
+make: 'all'을(를) 위해 할 일이 없습니다.
+09:31:32 **** Incremental Build of configuration Debug for project Echo_Serv_modify ****
+make all 
+Building file: ../src/CEpollMng.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CEpollMng.d" -MT"src/CEpollMng.o" -o "src/CEpollMng.o" "../src/CEpollMng.cpp"
+Finished building: ../src/CEpollMng.cpp
+ 
+Building file: ../src/CUser.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
+In file included from ../src/CUser.h:11:0,
+                 from ../src/CUser.cpp:8:
+../src/PacketDefine.h:39:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+../src/CUser.cpp: In member function ‘int CUser::ParsingData()’:
+../src/CUser.cpp:60:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../src/CUser.cpp
+ 
+Building file: ../src/CUserMng.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUserMng.d" -MT"src/CUserMng.o" -o "src/CUserMng.o" "../src/CUserMng.cpp"
+In file included from ../src/CUser.h:11:0,
+                 from ../src/CUserMng.h:12,
+                 from ../src/CUserMng.cpp:8:
+../src/PacketDefine.h:39:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+../src/CUserMng.cpp: In static member function ‘static void* CUserMng::WorkerThread(void*)’:
+../src/CUserMng.cpp:124:12: warning: unused variable ‘cUserMng’ [-Wunused-variable]
+  CUserMng *cUserMng = (CUserMng *)arg;
+            ^~~~~~~~
+Finished building: ../src/CUserMng.cpp
+ 
+Building file: ../src/CircularBuf.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CircularBuf.d" -MT"src/CircularBuf.o" -o "src/CircularBuf.o" "../src/CircularBuf.cpp"
+In file included from ../src/CircularBuf.h:11:0,
+                 from ../src/CircularBuf.cpp:8:
+../src/PacketDefine.h:39:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+Finished building: ../src/CircularBuf.cpp
+ 
+Building file: ../src/Echo_Server_modify.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Echo_Server_modify.d" -MT"src/Echo_Server_modify.o" -o "src/Echo_Server_modify.o" "../src/Echo_Server_modify.cpp"
+In file included from ../src/CUser.h:11:0,
+                 from ../src/CUserMng.h:12,
+                 from ../src/Echo_Server_modify.cpp:9:
+../src/PacketDefine.h:39:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+Finished building: ../src/Echo_Server_modify.cpp
+ 
+Building target: Echo_Serv_modify
+Invoking: GCC C++ Linker
+g++  -o "Echo_Serv_modify"  ./src/CEpollMng.o ./src/CUser.o ./src/CUserMng.o ./src/CircularBuf.o ./src/Echo_Server_modify.o   
+Finished building target: Echo_Serv_modify
+ 
+09:31:33 **** Clean-only build of configuration Debug for project Echo_Server ****
+make clean 
+rm -rf  ./src/CEpollMng.o ./src/CUserMng.o ./src/CircularBuffer.o ./src/DataMng.o ./src/Echo_Server.o  ./src/CEpollMng.d ./src/CUserMng.d ./src/CircularBuffer.d ./src/DataMng.d ./src/Echo_Server.d  Echo_Server
+ 
+09:31:33 **** Build of configuration Debug for project Echo_Server ****
+make all 
+Building file: ../src/CEpollMng.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CEpollMng.d" -MT"src/CEpollMng.o" -o "src/CEpollMng.o" "../src/CEpollMng.cpp"
+In file included from ../src/DataMng.h:15:0,
+                 from ../src/CUserMng.h:12,
+                 from ../src/CEpollMng.cpp:9:
+../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+Finished building: ../src/CEpollMng.cpp
+ 
+Building file: ../src/CUserMng.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUserMng.d" -MT"src/CUserMng.o" -o "src/CUserMng.o" "../src/CUserMng.cpp"
+In file included from ../src/DataMng.h:15:0,
+                 from ../src/CUserMng.h:12,
+                 from ../src/CUserMng.cpp:8:
+../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+Finished building: ../src/CUserMng.cpp
+ 
+Building file: ../src/CircularBuffer.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CircularBuffer.d" -MT"src/CircularBuffer.o" -o "src/CircularBuffer.o" "../src/CircularBuffer.cpp"
+In file included from ../src/CircularBuffer.h:14:0,
+                 from ../src/CircularBuffer.cpp:8:
+../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+Finished building: ../src/CircularBuffer.cpp
+ 
+Building file: ../src/DataMng.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/DataMng.d" -MT"src/DataMng.o" -o "src/DataMng.o" "../src/DataMng.cpp"
+In file included from ../src/DataMng.h:15:0,
+                 from ../src/DataMng.cpp:8:
+../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+Finished building: ../src/DataMng.cpp
+ 
+Building file: ../src/Echo_Server.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Echo_Server.d" -MT"src/Echo_Server.o" -o "src/Echo_Server.o" "../src/Echo_Server.cpp"
+In file included from ../src/DataMng.h:15:0,
+                 from ../src/CUserMng.h:12,
+                 from ../src/Echo_Server.cpp:9:
+../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+Finished building: ../src/Echo_Server.cpp
+ 
+Building target: Echo_Server
+Invoking: GCC C++ Linker
+g++  -o "Echo_Server"  ./src/CEpollMng.o ./src/CUserMng.o ./src/CircularBuffer.o ./src/DataMng.o ./src/Echo_Server.o   -lpthread
+Finished building target: Echo_Server
+ 
+09:31:34 **** Incremental Build of configuration Debug for project Echo_Server_0918 ****
+make all 
+make: 'all'을(를) 위해 할 일이 없습니다.

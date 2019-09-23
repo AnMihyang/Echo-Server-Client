@@ -6,6 +6,8 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
+// ----Client 직접 입력----
+
 #include <iostream>
 #include <list>
 #include <string>
