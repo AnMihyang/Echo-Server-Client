@@ -9,7 +9,6 @@
 #ifndef PACKETDEFINE_H_
 #define PACKETDEFINE_H_
 
-//#include <string>
 
 #define CMD_USER_LOGIN_REQ 0x01
 #define CMD_USER_LOGIN_RESULT 0x02

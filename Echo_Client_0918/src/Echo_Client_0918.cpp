@@ -6,7 +6,7 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
-// ----Client 직접 입력----
+// ----Client 직접 입력(Echo_Server, Echo_Server_0918 프로젝트와 통신)----
 
 #include <iostream>
 #include <list>
