@@ -24,9 +24,11 @@ private:
 	CUser m_CUser[MAX_CLIENT];
 	PACKET m_pack;
 
-	list<string> dataList;
+	list<string> m_dataList;
 
-	pthread_t tID;
+	pthread_t m_UserCheck_tID;
+	pthread_t m_Worker_tID;
+	pthread_mutex_t m_clntCon_mutex;
 
 public:
 	CUserMng();

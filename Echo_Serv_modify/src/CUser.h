@@ -10,8 +10,7 @@
 
 #include "PacketDefine.h"
 #include "CircularBuf.h"
-#include <list>
-#include <string>
+#include "DataMng.h"
 
 using namespace std;
 
@@ -19,7 +18,9 @@ class CUser {
 private:
 	Queue queue;
 	int m_strlen;
+	list<string> *m_dataList;
 	CircularBuf m_CircularBuf;
+	DataMng m_DataMng;
 public:
 	int m_clntSock;
 	bool m_clntConnect;
@@ -31,7 +32,7 @@ public:
 	int QueueCheck();
 	int ParsingData();
 	int SendData(PACKET pack);
-	int CheckPacket();
+	int CheckPacket(PACKET pack);
 };
 
 #endif /* CUSER_H_ */

@@ -8,6 +8,7 @@ CPP_SRCS += \
 ../src/CUser.cpp \
 ../src/CUserMng.cpp \
 ../src/CircularBuf.cpp \
+../src/DataMng.cpp \
 ../src/Echo_Server_modify.cpp 
 
 OBJS += \
@@ -15,6 +16,7 @@ OBJS += \
 ./src/CUser.o \
 ./src/CUserMng.o \
 ./src/CircularBuf.o \
+./src/DataMng.o \
 ./src/Echo_Server_modify.o 
 
 CPP_DEPS += \
@@ -22,6 +24,7 @@ CPP_DEPS += \
 ./src/CUser.d \
 ./src/CUserMng.d \
 ./src/CircularBuf.d \
+./src/DataMng.d \
 ./src/Echo_Server_modify.d 
 
 
