@@ -9,8 +9,6 @@
 #ifndef PACKETDEFINE_H_
 #define PACKETDEFINE_H_
 
-#include <stdio.h>
-
 #define CMD_USER_LOGIN_REQ 0x01
 #define CMD_USER_LOGIN_RESULT 0x02
 #define CMD_USER_DATA_REQ 0x03
@@ -33,7 +31,7 @@ typedef struct Milestone_Packet
 	unsigned short cmd;
 	int size;
 	char data[MAX_PACKET_SIZE];
-	char tail[5]={"11AA"};
+	char tail[5];
 }PACKET;
 
 #pragma pack(pop);	//정렬 설정을 이전 상태(기본값)로 되돌림

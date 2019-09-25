@@ -21,7 +21,7 @@
 void output_Menu();											//Menu 출력
 void message_Input_Send(int *sock, PACKET pack);			//입력받은 데이터 Server로 Send
 void Print_recv_List(int sock, PACKET pack);				//Server에서 List에 있는 데이터 받아서 출력
-void error_handling(char *message);						//error 처리
+void error_handling(int *sock, char *message);						//error 처리
 
 using namespace std;
 
@@ -34,28 +34,29 @@ int main(int argc, char *argv[])
 	string menu;
 	PACKET pack;
 
+	/*
 	//IP주소와 PORT번호 입력이 안될 경우 출력, 종료 처리
 	if(argc!=3){
 		printf("Usage : %s <IP> <port>\n", argv[0]);
 		exit(1);
-	}
+	}*/
 
 	//소켓 생성
 	sock=socket(PF_INET, SOCK_STREAM, 0);
 
 	//소켓 생성 에러 처리
 	if(sock==-1)
-		error_handling("socket() error");
+		error_handling(&sock, "socket() error");
 
 	//serv_adr 초기화
 	memset(&serv_adr, 0, sizeof(serv_adr));
 	serv_adr.sin_family=AF_INET;
-	serv_adr.sin_addr.s_addr=inet_addr(argv[1]);
-	serv_adr.sin_port=htons(atoi(argv[2]));
+	serv_adr.sin_addr.s_addr = inet_addr("192.168.8.37");
+	serv_adr.sin_port = htons(9190);
 
 	//server에 연결 요청 후 에러 처리
 	if(connect(sock, (struct sockaddr*)&serv_adr, sizeof(serv_adr)) == -1)
-		error_handling("connect() error!");
+		error_handling(&sock, "connect() error!");
 	else
 	{
 		puts("Connected...........");
@@ -88,24 +89,24 @@ int main(int argc, char *argv[])
 
 		case CMD_USER_SAVE_RESULT:
 			cout << "\n" << pack.data << endl;
-//			cout << "\n---Data Structure List---" << endl;
-//			Print_recv_List(sock, pack);
+			cout << "\n---Data Structure List---" << endl;
+			Print_recv_List(sock, pack);
 			break;
 
 		case CMD_USER_DELETE_RESULT:
 			cout << "\n" << pack.data << endl;
-//			cout << "\n---Data Structure List---" << endl;
-//			Print_recv_List(sock, pack);
+			cout << "\n---Data Structure List---" << endl;
+			Print_recv_List(sock, pack);
 			break;
 
 		case CMD_USER_PRINT_RESULT:
 			cout << "\n" << pack.data << endl;
-//			cout << "\n---Data Structure List---" << endl;
-//			Print_recv_List(sock, pack);
+			cout << "\n---Data Structure List---" << endl;
+			Print_recv_List(sock, pack);
 			break;
 
 		case CMD_USER_ERR:
-			puts("[ERROR] RESULT: CMD_USER_ERR");
+			puts("[ERROR] cmd: CMD_USER_ERR");
 			cout << pack.data << endl;
 			close(sock);
 			return 0;
@@ -155,14 +156,11 @@ int main(int argc, char *argv[])
 
 			case 4:	//Print Data Structure List
 				pack.cmd = CMD_USER_PRINT_REQ;
-				strcpy(pack.data, "\0");
+				strcpy(pack.data, "CMD_USER_PRINT_REQ");
 				send(sock, (char*)&pack, sizeof(PACKET), 0);
 				break;
 
 			case 5:
-				pack.cmd = CMD_USER_ERR;
-				strcpy(pack.data, "\0");
-				send(sock, (char*)&pack, sizeof(PACKET),0);
 				close(sock);
 				return 0;
 
@@ -204,17 +202,19 @@ void message_Input_Send(int *sock, PACKET pack)
 
 void Print_recv_List(int sock, PACKET pack)
 {
+	int cnt = 0;
 	while (pack.cmd != CMD_USER_ERR)
 	{
 		recv(sock, (char*) &pack, sizeof(PACKET), 0);
-		cout << ' ' << pack.data << endl;
+		cout << ' ' << ++cnt << ") " << pack.data << endl;
 	}
 	cout << "-------------------------" << endl;
 }
 
-void error_handling(char *message)
+void error_handling(int *sock, char *message)
 {
 	fputs(message, stderr);
 	fputc('\n', stderr);
+	close(*sock);
 	exit(1);
 }
