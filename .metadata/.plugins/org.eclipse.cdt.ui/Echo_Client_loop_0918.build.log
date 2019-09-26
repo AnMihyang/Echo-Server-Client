@@ -1,6 +1,6 @@
-09:31:31 **** Incremental Build of configuration Debug for project Echo_Client_loop_0918 ****
+15:03:41 **** Incremental Build of configuration Debug for project Echo_Client_loop_0918 ****
 make all 
 make: 'all'을(를) 위해 할 일이 없습니다.
 
-09:31:31 Build Finished. 0 errors, 0 warnings. (took 207ms)
+15:03:41 Build Finished. 0 errors, 0 warnings. (took 210ms)
 

@@ -1,193 +1,957 @@
-17:08:36 **** Incremental Build of configuration Debug for project Echo_Serv_modify ****
+16:45:47 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
 make all 
-Building file: ../src/CEpollMng.cpp
+Building file: ../src/CEpoll_mng.cpp
 Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CEpollMng.d" -MT"src/CEpollMng.o" -o "src/CEpollMng.o" "../src/CEpollMng.cpp"
-Finished building: ../src/CEpollMng.cpp
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CEpoll_mng.d" -MT"src/CEpoll_mng.o" -o "src/CEpoll_mng.o" "../src/CEpoll_mng.cpp"
+../src/CEpoll_mng.cpp:25:28: error: no ‘void CEpoll_mng::SetSocket()’ member function declared in class ‘CEpoll_mng’
+ void CEpoll_mng::SetSocket()
+                            ^
+../src/CEpoll_mng.cpp:42:45: error: no ‘epoll_event* CEpoll_mng::EpollCreate()’ member function declared in class ‘CEpoll_mng’
+ struct epoll_event *CEpoll_mng::EpollCreate()
+                                             ^
+../src/CEpoll_mng.cpp:60:27: error: no ‘int CEpoll_mng::EpollWait()’ member function declared in class ‘CEpoll_mng’
+ int CEpoll_mng::EpollWait()
+                           ^
+../src/CEpoll_mng.cpp:71:29: error: no ‘void CEpoll_mng::EpollClose()’ member function declared in class ‘CEpoll_mng’
+ void CEpoll_mng::EpollClose()
+                             ^
+../src/CEpoll_mng.cpp:76:40: error: no ‘void CEpoll_mng::SetNonblocking(int*)’ member function declared in class ‘CEpoll_mng’
+ void CEpoll_mng::SetNonblocking(int *fd)
+                                        ^
+make: *** [src/CEpoll_mng.o] Error 1
+src/subdir.mk:33: recipe for target 'src/CEpoll_mng.o' failed
+"make all" terminated with exit code 2. Build might be incomplete.
+16:46:30 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
+make all 
+Building file: ../src/CEpoll_mng.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CEpoll_mng.d" -MT"src/CEpoll_mng.o" -o "src/CEpoll_mng.o" "../src/CEpoll_mng.cpp"
+Finished building: ../src/CEpoll_mng.cpp
  
+Building file: ../src/CUser_mng.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser_mng.d" -MT"src/CUser_mng.o" -o "src/CUser_mng.o" "../src/CUser_mng.cpp"
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser_mng.h:11,
+                 from ../src/CUser_mng.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+In file included from ../src/CUser_mng.cpp:8:0:
+../src/CUser_mng.h:19:34: error: expected class-name before ‘{’ token
+ class CUserMng: public CEpollMng {
+                                  ^
+../src/CUser_mng.cpp: In constructor ‘CUserMng::CUserMng()’:
+../src/CUser_mng.cpp:21:2: error: ‘m_events’ was not declared in this scope
+  m_events = nullptr;
+  ^~~~~~~~
+../src/CUser_mng.cpp:21:2: note: suggested alternative: ‘sigevent’
+  m_events = nullptr;
+  ^~~~~~~~
+  sigevent
+../src/CUser_mng.cpp: In member function ‘void CUserMng::Server_Handling()’:
+../src/CUser_mng.cpp:36:2: error: ‘SetSocket’ was not declared in this scope
+  SetSocket();   //소켓 설정
+  ^~~~~~~~~
+../src/CUser_mng.cpp:36:2: note: suggested alternative: ‘setsockopt’
+  SetSocket();   //소켓 설정
+  ^~~~~~~~~
+  setsockopt
+../src/CUser_mng.cpp:38:2: error: ‘m_events’ was not declared in this scope
+  m_events = EpollCreate();
+  ^~~~~~~~
+../src/CUser_mng.cpp:38:2: note: suggested alternative: ‘sigevent’
+  m_events = EpollCreate();
+  ^~~~~~~~
+  sigevent
+../src/CUser_mng.cpp:38:13: error: ‘EpollCreate’ was not declared in this scope
+  m_events = EpollCreate();
+             ^~~~~~~~~~~
+../src/CUser_mng.cpp:38:13: note: suggested alternative: ‘epoll_create’
+  m_events = EpollCreate();
+             ^~~~~~~~~~~
+             epoll_create
+../src/CUser_mng.cpp:43:9: error: ‘m_serv_sock’ was not declared in this scope
+   close(m_serv_sock);
+         ^~~~~~~~~~~
+../src/CUser_mng.cpp:44:3: error: ‘EpollClose’ was not declared in this scope
+   EpollClose();
+   ^~~~~~~~~~
+../src/CUser_mng.cpp:44:3: note: suggested alternative: ‘pclose’
+   EpollClose();
+   ^~~~~~~~~~
+   pclose
+../src/CUser_mng.cpp:52:9: error: ‘m_serv_sock’ was not declared in this scope
+   close(m_serv_sock);
+         ^~~~~~~~~~~
+../src/CUser_mng.cpp:53:3: error: ‘EpollClose’ was not declared in this scope
+   EpollClose();
+   ^~~~~~~~~~
+../src/CUser_mng.cpp:53:3: note: suggested alternative: ‘pclose’
+   EpollClose();
+   ^~~~~~~~~~
+   pclose
+../src/CUser_mng.cpp:59:15: error: ‘EpollWait’ was not declared in this scope
+   event_cnt = EpollWait();
+               ^~~~~~~~~
+../src/CUser_mng.cpp:59:15: note: suggested alternative: ‘epoll_wait’
+   event_cnt = EpollWait();
+               ^~~~~~~~~
+               epoll_wait
+../src/CUser_mng.cpp:70:31: error: ‘m_serv_sock’ was not declared in this scope
+    if (m_events[i].data.fd == m_serv_sock)
+                               ^~~~~~~~~~~
+../src/CUser_mng.cpp:137:8: error: ‘m_serv_sock’ was not declared in this scope
+  close(m_serv_sock);
+        ^~~~~~~~~~~
+../src/CUser_mng.cpp:138:2: error: ‘EpollClose’ was not declared in this scope
+  EpollClose();
+  ^~~~~~~~~~
+../src/CUser_mng.cpp:138:2: note: suggested alternative: ‘pclose’
+  EpollClose();
+  ^~~~~~~~~~
+  pclose
+../src/CUser_mng.cpp: In member function ‘int CUserMng::Connect_Client()’:
+../src/CUser_mng.cpp:144:22: error: ‘m_serv_sock’ was not declared in this scope
+  m_clntSock = accept(m_serv_sock, (struct sockaddr*) &m_clntSock, &m_adr_sz);
+                      ^~~~~~~~~~~
+../src/CUser_mng.cpp:146:2: error: ‘SetNonblocking’ was not declared in this scope
+  SetNonblocking(&m_clntSock);
+  ^~~~~~~~~~~~~~
+../src/CUser_mng.cpp:149:2: error: ‘m_event’ was not declared in this scope
+  m_event.events = EPOLLIN|EPOLLET|EPOLLRDHUP;
+  ^~~~~~~
+../src/CUser_mng.cpp:149:2: note: suggested alternative: ‘sigevent’
+  m_event.events = EPOLLIN|EPOLLET|EPOLLRDHUP;
+  ^~~~~~~
+  sigevent
+../src/CUser_mng.cpp:152:15: error: ‘m_epfd’ was not declared in this scope
+  if(epoll_ctl(m_epfd, EPOLL_CTL_ADD, m_clntSock, &m_event) == ERR)
+               ^~~~~~
+../src/CUser_mng.cpp: In member function ‘void CUserMng::Close_Client(int*)’:
+../src/CUser_mng.cpp:162:12: error: ‘m_epfd’ was not declared in this scope
+  epoll_ctl(m_epfd, EPOLL_CTL_DEL, *fd, NULL);
+            ^~~~~~
+make: *** [src/CUser_mng.o] Error 1
+src/subdir.mk:33: recipe for target 'src/CUser_mng.o' failed
+"make all" terminated with exit code 2. Build might be incomplete.
+16:47:39 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
+make all 
 Building file: ../src/CUser.cpp
 Invoking: GCC C++ Compiler
 g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
-In file included from ../src/CUser.h:11:0,
+../src/CUser.cpp:209:2: warning: "/*" within comment [-Wcomment]
+  /*
+   
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
                  from ../src/CUser.cpp:8:
-../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
  #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
                   ^
-Finished building: ../src/CUser.cpp
- 
-Building file: ../src/CUserMng.cpp
-Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUserMng.d" -MT"src/CUserMng.o" -o "src/CUserMng.o" "../src/CUserMng.cpp"
-In file included from ../src/CUser.h:11:0,
-                 from ../src/CUserMng.h:12,
-                 from ../src/CUserMng.cpp:8:
-../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
- #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
-                  ^
-../src/CUserMng.cpp: In static member function ‘static void* CUserMng::WorkerThread(void*)’:
-../src/CUserMng.cpp:123:12: warning: unused variable ‘cUserMng’ [-Wunused-variable]
-  CUserMng *cUserMng = (CUserMng *)arg;
-            ^~~~~~~~
-Finished building: ../src/CUserMng.cpp
- 
-Building file: ../src/CircularBuf.cpp
-Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CircularBuf.d" -MT"src/CircularBuf.o" -o "src/CircularBuf.o" "../src/CircularBuf.cpp"
-In file included from ../src/CircularBuf.h:11:0,
-                 from ../src/CircularBuf.cpp:8:
-../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
- #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
-                  ^
-Finished building: ../src/CircularBuf.cpp
- 
-Building file: ../src/Echo_Server_modify.cpp
-Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Echo_Server_modify.d" -MT"src/Echo_Server_modify.o" -o "src/Echo_Server_modify.o" "../src/Echo_Server_modify.cpp"
-In file included from ../src/CUser.h:11:0,
-                 from ../src/CUserMng.h:12,
-                 from ../src/Echo_Server_modify.cpp:9:
-../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
- #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
-                  ^
-Finished building: ../src/Echo_Server_modify.cpp
- 
-Building target: Echo_Serv_modify
-Invoking: GCC C++ Linker
-g++  -o "Echo_Serv_modify"  ./src/CEpollMng.o ./src/CUser.o ./src/CUserMng.o ./src/CircularBuf.o ./src/Echo_Server_modify.o   
-Finished building target: Echo_Serv_modify
- 
-09:31:31 **** Incremental Build of configuration Debug for project Echo_Client_0918 ****
-make all 
-make: 'all'을(를) 위해 할 일이 없습니다.
-09:31:31 **** Incremental Build of configuration Debug for project Echo_Client_loop_0918 ****
-make all 
-make: 'all'을(를) 위해 할 일이 없습니다.
-09:31:32 **** Incremental Build of configuration Debug for project Echo_Serv_modify ****
-make all 
-Building file: ../src/CEpollMng.cpp
-Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CEpollMng.d" -MT"src/CEpollMng.o" -o "src/CEpollMng.o" "../src/CEpollMng.cpp"
-Finished building: ../src/CEpollMng.cpp
- 
-Building file: ../src/CUser.cpp
-Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
-In file included from ../src/CUser.h:11:0,
-                 from ../src/CUser.cpp:8:
-../src/PacketDefine.h:39:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
- #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
-                  ^
+In file included from ../src/CUser.cpp:8:0:
+../src/CUser.h:22:2: error: ‘CircularBuf’ does not name a type; did you mean ‘Circularbuf’?
+  CircularBuf m_CircularBuf;
+  ^~~~~~~~~~~
+  Circularbuf
+../src/CUser.cpp: In member function ‘int CUser::RecvData(int, int, std::__cxx11::list<std::__cxx11::basic_string<char> >*)’:
+../src/CUser.cpp:63:5: error: ‘m_CircularBuf’ was not declared in this scope
+     m_CircularBuf.Enqueue(&queue, recvPack);
+     ^~~~~~~~~~~~~
+../src/CUser.cpp:63:5: note: suggested alternative: ‘Circularbuf’
+     m_CircularBuf.Enqueue(&queue, recvPack);
+     ^~~~~~~~~~~~~
+     Circularbuf
+../src/CUser.cpp: In member function ‘int CUser::QueueCheck()’:
+../src/CUser.cpp:73:5: error: ‘m_CircularBuf’ was not declared in this scope
+  if(m_CircularBuf.IsEmpty_Queue(&queue))
+     ^~~~~~~~~~~~~
+../src/CUser.cpp:73:5: note: suggested alternative: ‘Circularbuf’
+  if(m_CircularBuf.IsEmpty_Queue(&queue))
+     ^~~~~~~~~~~~~
+     Circularbuf
 ../src/CUser.cpp: In member function ‘int CUser::ParsingData()’:
-../src/CUser.cpp:60:1: warning: control reaches end of non-void function [-Wreturn-type]
- }
- ^
+../src/CUser.cpp:94:3: error: ‘m_CircularBuf’ was not declared in this scope
+   m_CircularBuf.Dequeue(&queue);
+   ^~~~~~~~~~~~~
+../src/CUser.cpp:94:3: note: suggested alternative: ‘Circularbuf’
+   m_CircularBuf.Dequeue(&queue);
+   ^~~~~~~~~~~~~
+   Circularbuf
+src/subdir.mk:33: recipe for target 'src/CUser.o' failed
+make: *** [src/CUser.o] Error 1
+"make all" terminated with exit code 2. Build might be incomplete.
+16:49:37 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
+make all 
+Building file: ../src/CUser.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
+../src/CUser.cpp:209:2: warning: "/*" within comment [-Wcomment]
+  /*
+   
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+In file included from ../src/CUser.cpp:8:0:
+../src/CUser.h:22:2: error: ‘CircularBuf’ does not name a type; did you mean ‘Circularbuf’?
+  CircularBuf m_CircularBuf;
+  ^~~~~~~~~~~
+  Circularbuf
+../src/CUser.cpp: In member function ‘int CUser::RecvData(int, int, std::__cxx11::list<std::__cxx11::basic_string<char> >*)’:
+../src/CUser.cpp:63:5: error: ‘m_CircularBuf’ was not declared in this scope
+     m_CircularBuf.Enqueue(&queue, recvPack);
+     ^~~~~~~~~~~~~
+../src/CUser.cpp:63:5: note: suggested alternative: ‘Circularbuf’
+     m_CircularBuf.Enqueue(&queue, recvPack);
+     ^~~~~~~~~~~~~
+     Circularbuf
+../src/CUser.cpp: In member function ‘int CUser::QueueCheck()’:
+../src/CUser.cpp:73:5: error: ‘m_CircularBuf’ was not declared in this scope
+  if(m_CircularBuf.IsEmpty_Queue(&queue))
+     ^~~~~~~~~~~~~
+../src/CUser.cpp:73:5: note: suggested alternative: ‘Circularbuf’
+  if(m_CircularBuf.IsEmpty_Queue(&queue))
+     ^~~~~~~~~~~~~
+     Circularbuf
+../src/CUser.cpp: In member function ‘int CUser::ParsingData()’:
+../src/CUser.cpp:94:3: error: ‘m_CircularBuf’ was not declared in this scope
+   m_CircularBuf.Dequeue(&queue);
+   ^~~~~~~~~~~~~
+../src/CUser.cpp:94:3: note: suggested alternative: ‘Circularbuf’
+   m_CircularBuf.Dequeue(&queue);
+   ^~~~~~~~~~~~~
+   Circularbuf
+make: *** [src/CUser.o] Error 1
+src/subdir.mk:33: recipe for target 'src/CUser.o' failed
+"make all" terminated with exit code 2. Build might be incomplete.
+16:50:18 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
+make all 
+Building file: ../src/CUser.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
+../src/CUser.cpp:209:2: warning: "/*" within comment [-Wcomment]
+  /*
+   
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+In file included from ../src/CUser.cpp:8:0:
+../src/CUser.h:22:2: error: ‘CircularBuf’ does not name a type; did you mean ‘Circularbuf’?
+  CircularBuf m_CircularBuf;
+  ^~~~~~~~~~~
+  Circularbuf
+../src/CUser.cpp: In member function ‘int CUser::RecvData(int, int, std::__cxx11::list<std::__cxx11::basic_string<char> >*)’:
+../src/CUser.cpp:63:5: error: ‘m_CircularBuf’ was not declared in this scope
+     m_CircularBuf.Enqueue(&queue, recvPack);
+     ^~~~~~~~~~~~~
+../src/CUser.cpp:63:5: note: suggested alternative: ‘Circularbuf’
+     m_CircularBuf.Enqueue(&queue, recvPack);
+     ^~~~~~~~~~~~~
+     Circularbuf
+../src/CUser.cpp: In member function ‘int CUser::QueueCheck()’:
+../src/CUser.cpp:73:5: error: ‘m_CircularBuf’ was not declared in this scope
+  if(m_CircularBuf.IsEmpty_Queue(&queue))
+     ^~~~~~~~~~~~~
+../src/CUser.cpp:73:5: note: suggested alternative: ‘Circularbuf’
+  if(m_CircularBuf.IsEmpty_Queue(&queue))
+     ^~~~~~~~~~~~~
+     Circularbuf
+../src/CUser.cpp: In member function ‘int CUser::ParsingData()’:
+../src/CUser.cpp:94:3: error: ‘m_CircularBuf’ was not declared in this scope
+   m_CircularBuf.Dequeue(&queue);
+   ^~~~~~~~~~~~~
+../src/CUser.cpp:94:3: note: suggested alternative: ‘Circularbuf’
+   m_CircularBuf.Dequeue(&queue);
+   ^~~~~~~~~~~~~
+   Circularbuf
+src/subdir.mk:33: recipe for target 'src/CUser.o' failed
+make: *** [src/CUser.o] Error 1
+"make all" terminated with exit code 2. Build might be incomplete.
+16:51:17 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
+make all 
+Building file: ../src/CUser.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
+../src/CUser.cpp:209:2: warning: "/*" within comment [-Wcomment]
+  /*
+   
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+In file included from ../src/CUser.cpp:8:0:
+../src/CUser.h:22:2: error: ‘CircularBuf’ does not name a type; did you mean ‘Circularbuf’?
+  CircularBuf m_CircularBuf;
+  ^~~~~~~~~~~
+  Circularbuf
+../src/CUser.cpp: In member function ‘int CUser::RecvData(int, int, std::__cxx11::list<std::__cxx11::basic_string<char> >*)’:
+../src/CUser.cpp:63:5: error: ‘m_CircularBuf’ was not declared in this scope
+     m_CircularBuf.Enqueue(&queue, recvPack);
+     ^~~~~~~~~~~~~
+../src/CUser.cpp:63:5: note: suggested alternative: ‘Circularbuf’
+     m_CircularBuf.Enqueue(&queue, recvPack);
+     ^~~~~~~~~~~~~
+     Circularbuf
+../src/CUser.cpp: In member function ‘int CUser::QueueCheck()’:
+../src/CUser.cpp:73:5: error: ‘m_CircularBuf’ was not declared in this scope
+  if(m_CircularBuf.IsEmpty_Queue(&queue))
+     ^~~~~~~~~~~~~
+../src/CUser.cpp:73:5: note: suggested alternative: ‘Circularbuf’
+  if(m_CircularBuf.IsEmpty_Queue(&queue))
+     ^~~~~~~~~~~~~
+     Circularbuf
+../src/CUser.cpp: In member function ‘int CUser::ParsingData()’:
+../src/CUser.cpp:94:3: error: ‘m_CircularBuf’ was not declared in this scope
+   m_CircularBuf.Dequeue(&queue);
+   ^~~~~~~~~~~~~
+../src/CUser.cpp:94:3: note: suggested alternative: ‘Circularbuf’
+   m_CircularBuf.Dequeue(&queue);
+   ^~~~~~~~~~~~~
+   Circularbuf
+src/subdir.mk:33: recipe for target 'src/CUser.o' failed
+make: *** [src/CUser.o] Error 1
+"make all" terminated with exit code 2. Build might be incomplete.
+16:53:04 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
+make all 
+Building file: ../src/CUser.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
+../src/CUser.cpp:209:2: warning: "/*" within comment [-Wcomment]
+  /*
+   
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+../src/CUser.cpp:37:65: error: no ‘int CUser::RecvData(int, int, std::__cxx11::list<std::__cxx11::basic_string<char> >*)’ member function declared in class ‘CUser’
+ int CUser::RecvData(int fd, int cUserNum, list<string> *dataList) {
+                                                                 ^
+../src/CUser.cpp: In member function ‘int CUser::Parsing_data()’:
+../src/CUser.cpp:101:12: error: ‘SendData’ was not declared in this scope
+     return SendData(pack);
+            ^~~~~~~~
+../src/CUser.cpp:101:12: note: suggested alternative: ‘Send_data’
+     return SendData(pack);
+            ^~~~~~~~
+            Send_data
+make: *** [src/CUser.o] Error 1
+src/subdir.mk:33: recipe for target 'src/CUser.o' failed
+"make all" terminated with exit code 2. Build might be incomplete.
+16:54:34 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
+make all 
+Building file: ../src/CUser.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
+../src/CUser.cpp:209:2: warning: "/*" within comment [-Wcomment]
+  /*
+   
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+../src/CUser.cpp: In member function ‘int CUser::Recv_data(int, int, std::__cxx11::list<std::__cxx11::basic_string<char> >*)’:
+../src/CUser.cpp:39:2: error: ‘m_clntSock’ was not declared in this scope
+  m_clntSock = fd;
+  ^~~~~~~~~~
+../src/CUser.cpp:39:2: note: suggested alternative: ‘m_clnt_sock’
+  m_clntSock = fd;
+  ^~~~~~~~~~
+  m_clnt_sock
+../src/CUser.cpp:40:2: error: ‘m_dataList’ was not declared in this scope
+  m_dataList = dataList;
+  ^~~~~~~~~~
+../src/CUser.cpp:40:2: note: suggested alternative: ‘m_data_list’
+  m_dataList = dataList;
+  ^~~~~~~~~~
+  m_data_list
+../src/CUser.cpp:45:32: error: ‘recv_pack’ was not declared in this scope
+   m_strlen = recv(fd, (char*) &recv_pack, sizeof(PACKET), 0);
+                                ^~~~~~~~~
+../src/CUser.cpp:45:32: note: suggested alternative: ‘recvPack’
+   m_strlen = recv(fd, (char*) &recv_pack, sizeof(PACKET), 0);
+                                ^~~~~~~~~
+                                recvPack
+../src/CUser.cpp: In member function ‘int CUser::Parsing_data()’:
+../src/CUser.cpp:100:30: error: ‘m_clntSock’ was not declared in this scope
+     sprintf(pack.data, "%d", m_clntSock);
+                              ^~~~~~~~~~
+../src/CUser.cpp:100:30: note: suggested alternative: ‘m_clnt_sock’
+     sprintf(pack.data, "%d", m_clntSock);
+                              ^~~~~~~~~~
+                              m_clnt_sock
+../src/CUser.cpp:111:10: error: ‘m_DataMng’ was not declared in this scope
+     if(! m_DataMng.InsertData(pack, m_dataList))
+          ^~~~~~~~~
+../src/CUser.cpp:111:10: note: suggested alternative: ‘m_Data_mng’
+     if(! m_DataMng.InsertData(pack, m_dataList))
+          ^~~~~~~~~
+          m_Data_mng
+../src/CUser.cpp:111:37: error: ‘m_dataList’ was not declared in this scope
+     if(! m_DataMng.InsertData(pack, m_dataList))
+                                     ^~~~~~~~~~
+../src/CUser.cpp:111:37: note: suggested alternative: ‘m_data_list’
+     if(! m_DataMng.InsertData(pack, m_dataList))
+                                     ^~~~~~~~~~
+                                     m_data_list
+../src/CUser.cpp:121:9: error: ‘m_DataMng’ was not declared in this scope
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+         ^~~~~~~~~
+../src/CUser.cpp:121:9: note: suggested alternative: ‘m_Data_mng’
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+         ^~~~~~~~~
+         m_Data_mng
+../src/CUser.cpp:121:44: error: ‘m_dataList’ was not declared in this scope
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+                                            ^~~~~~~~~~
+../src/CUser.cpp:121:44: note: suggested alternative: ‘m_data_list’
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+                                            ^~~~~~~~~~
+                                            m_data_list
+../src/CUser.cpp:129:10: error: ‘m_DataMng’ was not declared in this scope
+     if(! m_DataMng.DeleteData(pack, m_dataList))
+          ^~~~~~~~~
+../src/CUser.cpp:129:10: note: suggested alternative: ‘m_Data_mng’
+     if(! m_DataMng.DeleteData(pack, m_dataList))
+          ^~~~~~~~~
+          m_Data_mng
+../src/CUser.cpp:129:37: error: ‘m_dataList’ was not declared in this scope
+     if(! m_DataMng.DeleteData(pack, m_dataList))
+                                     ^~~~~~~~~~
+../src/CUser.cpp:129:37: note: suggested alternative: ‘m_data_list’
+     if(! m_DataMng.DeleteData(pack, m_dataList))
+                                     ^~~~~~~~~~
+                                     m_data_list
+../src/CUser.cpp:138:9: error: ‘m_DataMng’ was not declared in this scope
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+         ^~~~~~~~~
+../src/CUser.cpp:138:9: note: suggested alternative: ‘m_Data_mng’
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+         ^~~~~~~~~
+         m_Data_mng
+../src/CUser.cpp:138:44: error: ‘m_dataList’ was not declared in this scope
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+                                            ^~~~~~~~~~
+../src/CUser.cpp:138:44: note: suggested alternative: ‘m_data_list’
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+                                            ^~~~~~~~~~
+                                            m_data_list
+../src/CUser.cpp:151:9: error: ‘m_DataMng’ was not declared in this scope
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+         ^~~~~~~~~
+../src/CUser.cpp:151:9: note: suggested alternative: ‘m_Data_mng’
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+         ^~~~~~~~~
+         m_Data_mng
+../src/CUser.cpp:151:44: error: ‘m_dataList’ was not declared in this scope
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+                                            ^~~~~~~~~~
+../src/CUser.cpp:151:44: note: suggested alternative: ‘m_data_list’
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+                                            ^~~~~~~~~~
+                                            m_data_list
+../src/CUser.cpp: In member function ‘int CUser::Send_data(PACKET)’:
+../src/CUser.cpp:170:10: error: ‘m_clntSock’ was not declared in this scope
+  if(send(m_clntSock, (char*) &pack, sizeof(PACKET), 0) == -1)
+          ^~~~~~~~~~
+../src/CUser.cpp:170:10: note: suggested alternative: ‘m_clnt_sock’
+  if(send(m_clntSock, (char*) &pack, sizeof(PACKET), 0) == -1)
+          ^~~~~~~~~~
+          m_clnt_sock
+src/subdir.mk:33: recipe for target 'src/CUser.o' failed
+make: *** [src/CUser.o] Error 1
+"make all" terminated with exit code 2. Build might be incomplete.
+16:55:27 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
+make all 
+Building file: ../src/CUser.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
+../src/CUser.cpp:209:2: warning: "/*" within comment [-Wcomment]
+  /*
+   
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+../src/CUser.cpp: In member function ‘int CUser::Parsing_data()’:
+../src/CUser.cpp:100:30: error: ‘m_clntSock’ was not declared in this scope
+     sprintf(pack.data, "%d", m_clntSock);
+                              ^~~~~~~~~~
+../src/CUser.cpp:100:30: note: suggested alternative: ‘m_clnt_sock’
+     sprintf(pack.data, "%d", m_clntSock);
+                              ^~~~~~~~~~
+                              m_clnt_sock
+../src/CUser.cpp:111:10: error: ‘m_DataMng’ was not declared in this scope
+     if(! m_DataMng.InsertData(pack, m_dataList))
+          ^~~~~~~~~
+../src/CUser.cpp:111:10: note: suggested alternative: ‘m_Data_mng’
+     if(! m_DataMng.InsertData(pack, m_dataList))
+          ^~~~~~~~~
+          m_Data_mng
+../src/CUser.cpp:111:37: error: ‘m_dataList’ was not declared in this scope
+     if(! m_DataMng.InsertData(pack, m_dataList))
+                                     ^~~~~~~~~~
+../src/CUser.cpp:111:37: note: suggested alternative: ‘m_data_list’
+     if(! m_DataMng.InsertData(pack, m_dataList))
+                                     ^~~~~~~~~~
+                                     m_data_list
+../src/CUser.cpp:121:9: error: ‘m_DataMng’ was not declared in this scope
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+         ^~~~~~~~~
+../src/CUser.cpp:121:9: note: suggested alternative: ‘m_Data_mng’
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+         ^~~~~~~~~
+         m_Data_mng
+../src/CUser.cpp:121:44: error: ‘m_dataList’ was not declared in this scope
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+                                            ^~~~~~~~~~
+../src/CUser.cpp:121:44: note: suggested alternative: ‘m_data_list’
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+                                            ^~~~~~~~~~
+                                            m_data_list
+../src/CUser.cpp:129:10: error: ‘m_DataMng’ was not declared in this scope
+     if(! m_DataMng.DeleteData(pack, m_dataList))
+          ^~~~~~~~~
+../src/CUser.cpp:129:10: note: suggested alternative: ‘m_Data_mng’
+     if(! m_DataMng.DeleteData(pack, m_dataList))
+          ^~~~~~~~~
+          m_Data_mng
+../src/CUser.cpp:129:37: error: ‘m_dataList’ was not declared in this scope
+     if(! m_DataMng.DeleteData(pack, m_dataList))
+                                     ^~~~~~~~~~
+../src/CUser.cpp:129:37: note: suggested alternative: ‘m_data_list’
+     if(! m_DataMng.DeleteData(pack, m_dataList))
+                                     ^~~~~~~~~~
+                                     m_data_list
+../src/CUser.cpp:138:9: error: ‘m_DataMng’ was not declared in this scope
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+         ^~~~~~~~~
+../src/CUser.cpp:138:9: note: suggested alternative: ‘m_Data_mng’
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+         ^~~~~~~~~
+         m_Data_mng
+../src/CUser.cpp:138:44: error: ‘m_dataList’ was not declared in this scope
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+                                            ^~~~~~~~~~
+../src/CUser.cpp:138:44: note: suggested alternative: ‘m_data_list’
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+                                            ^~~~~~~~~~
+                                            m_data_list
+../src/CUser.cpp:151:9: error: ‘m_DataMng’ was not declared in this scope
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+         ^~~~~~~~~
+../src/CUser.cpp:151:9: note: suggested alternative: ‘m_Data_mng’
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+         ^~~~~~~~~
+         m_Data_mng
+../src/CUser.cpp:151:44: error: ‘m_dataList’ was not declared in this scope
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+                                            ^~~~~~~~~~
+../src/CUser.cpp:151:44: note: suggested alternative: ‘m_data_list’
+      if(m_DataMng.SendDataList(m_clntSock, m_dataList) == ERR)
+                                            ^~~~~~~~~~
+                                            m_data_list
+../src/CUser.cpp: In member function ‘int CUser::Send_data(PACKET)’:
+../src/CUser.cpp:170:10: error: ‘m_clntSock’ was not declared in this scope
+  if(send(m_clntSock, (char*) &pack, sizeof(PACKET), 0) == -1)
+          ^~~~~~~~~~
+../src/CUser.cpp:170:10: note: suggested alternative: ‘m_clnt_sock’
+  if(send(m_clntSock, (char*) &pack, sizeof(PACKET), 0) == -1)
+          ^~~~~~~~~~
+          m_clnt_sock
+make: *** [src/CUser.o] Error 1
+src/subdir.mk:33: recipe for target 'src/CUser.o' failed
+"make all" terminated with exit code 2. Build might be incomplete.
+16:57:57 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
+make all 
+Building file: ../src/CUser.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
+../src/CUser.cpp:209:2: warning: "/*" within comment [-Wcomment]
+  /*
+   
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+../src/CUser.cpp: In member function ‘int CUser::Parsing_data()’:
+../src/CUser.cpp:111:21: error: ‘class DataMng’ has no member named ‘Insert_data’; did you mean ‘InsertData’?
+     if(! m_Data_mng.Insert_data(pack, m_data_list))
+                     ^~~~~~~~~~~
+                     InsertData
+../src/CUser.cpp:121:20: error: ‘class DataMng’ has no member named ‘Send_data_list’; did you mean ‘SendDataList’?
+      if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+                    ^~~~~~~~~~~~~~
+                    SendDataList
+../src/CUser.cpp:129:21: error: ‘class DataMng’ has no member named ‘Delete_data’; did you mean ‘DeleteData’?
+     if(! m_Data_mng.Delete_data(pack, m_data_list))
+                     ^~~~~~~~~~~
+                     DeleteData
+../src/CUser.cpp:138:9: error: ‘m_DataMng’ was not declared in this scope
+      if(m_DataMng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+         ^~~~~~~~~
+../src/CUser.cpp:138:9: note: suggested alternative: ‘m_Data_mng’
+      if(m_DataMng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+         ^~~~~~~~~
+         m_Data_mng
+../src/CUser.cpp:151:20: error: ‘class DataMng’ has no member named ‘Send_data_list’; did you mean ‘SendDataList’?
+      if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+                    ^~~~~~~~~~~~~~
+                    SendDataList
+make: *** [src/CUser.o] Error 1
+src/subdir.mk:33: recipe for target 'src/CUser.o' failed
+"make all" terminated with exit code 2. Build might be incomplete.
+16:59:49 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
+make all 
+Building file: ../src/CUser.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
+../src/CUser.cpp:209:2: warning: "/*" within comment [-Wcomment]
+  /*
+   
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+../src/CUser.cpp: In member function ‘int CUser::Parsing_data()’:
+../src/CUser.cpp:111:21: error: ‘class DataMng’ has no member named ‘Insert_data’; did you mean ‘InsertData’?
+     if(! m_Data_mng.Insert_data(pack, m_data_list))
+                     ^~~~~~~~~~~
+                     InsertData
+../src/CUser.cpp:121:20: error: ‘class DataMng’ has no member named ‘Send_data_list’; did you mean ‘SendDataList’?
+      if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+                    ^~~~~~~~~~~~~~
+                    SendDataList
+../src/CUser.cpp:129:21: error: ‘class DataMng’ has no member named ‘Delete_data’; did you mean ‘DeleteData’?
+     if(! m_Data_mng.Delete_data(pack, m_data_list))
+                     ^~~~~~~~~~~
+                     DeleteData
+../src/CUser.cpp:138:9: error: ‘m_DataMng’ was not declared in this scope
+      if(m_DataMng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+         ^~~~~~~~~
+../src/CUser.cpp:138:9: note: suggested alternative: ‘m_Data_mng’
+      if(m_DataMng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+         ^~~~~~~~~
+         m_Data_mng
+../src/CUser.cpp:151:20: error: ‘class DataMng’ has no member named ‘Send_data_list’; did you mean ‘SendDataList’?
+      if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+                    ^~~~~~~~~~~~~~
+                    SendDataList
+src/subdir.mk:33: recipe for target 'src/CUser.o' failed
+make: *** [src/CUser.o] Error 1
+"make all" terminated with exit code 2. Build might be incomplete.
+17:01:20 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
+make all 
+Building file: ../src/CUser.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
+../src/CUser.cpp:209:2: warning: "/*" within comment [-Wcomment]
+  /*
+   
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+../src/CUser.cpp: In member function ‘int CUser::Parsing_data()’:
+../src/CUser.cpp:111:21: error: ‘class DataMng’ has no member named ‘Insert_data’; did you mean ‘InsertData’?
+     if(! m_Data_mng.Insert_data(pack, m_data_list))
+                     ^~~~~~~~~~~
+                     InsertData
+../src/CUser.cpp:121:20: error: ‘class DataMng’ has no member named ‘Send_data_list’; did you mean ‘SendDataList’?
+      if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+                    ^~~~~~~~~~~~~~
+                    SendDataList
+../src/CUser.cpp:129:21: error: ‘class DataMng’ has no member named ‘Delete_data’; did you mean ‘DeleteData’?
+     if(! m_Data_mng.Delete_data(pack, m_data_list))
+                     ^~~~~~~~~~~
+                     DeleteData
+../src/CUser.cpp:138:9: error: ‘m_DataMng’ was not declared in this scope
+      if(m_DataMng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+         ^~~~~~~~~
+../src/CUser.cpp:138:9: note: suggested alternative: ‘m_Data_mng’
+      if(m_DataMng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+         ^~~~~~~~~
+         m_Data_mng
+../src/CUser.cpp:151:20: error: ‘class DataMng’ has no member named ‘Send_data_list’; did you mean ‘SendDataList’?
+      if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+                    ^~~~~~~~~~~~~~
+                    SendDataList
+src/subdir.mk:33: recipe for target 'src/CUser.o' failed
+make: *** [src/CUser.o] Error 1
+"make all" terminated with exit code 2. Build might be incomplete.
+17:06:05 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
+make all 
+Building file: ../src/CUser.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
+../src/CUser.cpp:209:2: warning: "/*" within comment [-Wcomment]
+  /*
+   
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+In file included from ../src/CUser.cpp:8:0:
+../src/CUser.h:23:2: error: ‘DataMng’ does not name a type; did you mean ‘Data_mng’?
+  DataMng m_Data_mng;
+  ^~~~~~~
+  Data_mng
+../src/CUser.cpp: In member function ‘int CUser::Parsing_data()’:
+../src/CUser.cpp:111:10: error: ‘m_Data_mng’ was not declared in this scope
+     if(! m_Data_mng.Insert_data(pack, m_data_list))
+          ^~~~~~~~~~
+../src/CUser.cpp:111:10: note: suggested alternative: ‘Data_mng’
+     if(! m_Data_mng.Insert_data(pack, m_data_list))
+          ^~~~~~~~~~
+          Data_mng
+../src/CUser.cpp:121:9: error: ‘m_Data_mng’ was not declared in this scope
+      if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+         ^~~~~~~~~~
+../src/CUser.cpp:121:9: note: suggested alternative: ‘Data_mng’
+      if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+         ^~~~~~~~~~
+         Data_mng
+../src/CUser.cpp:129:10: error: ‘m_Data_mng’ was not declared in this scope
+     if(! m_Data_mng.Delete_data(pack, m_data_list))
+          ^~~~~~~~~~
+../src/CUser.cpp:129:10: note: suggested alternative: ‘Data_mng’
+     if(! m_Data_mng.Delete_data(pack, m_data_list))
+          ^~~~~~~~~~
+          Data_mng
+../src/CUser.cpp:138:9: error: ‘m_Data_mng’ was not declared in this scope
+      if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+         ^~~~~~~~~~
+../src/CUser.cpp:138:9: note: suggested alternative: ‘Data_mng’
+      if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+         ^~~~~~~~~~
+         Data_mng
+../src/CUser.cpp:151:9: error: ‘m_Data_mng’ was not declared in this scope
+      if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+         ^~~~~~~~~~
+../src/CUser.cpp:151:9: note: suggested alternative: ‘Data_mng’
+      if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+         ^~~~~~~~~~
+         Data_mng
+src/subdir.mk:33: recipe for target 'src/CUser.o' failed
+make: *** [src/CUser.o] Error 1
+"make all" terminated with exit code 2. Build might be incomplete.
+17:08:20 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
+make all 
+Building file: ../src/CUser.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser.d" -MT"src/CUser.o" -o "src/CUser.o" "../src/CUser.cpp"
+../src/CUser.cpp:209:2: warning: "/*" within comment [-Wcomment]
+  /*
+   
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
 Finished building: ../src/CUser.cpp
  
-Building file: ../src/CUserMng.cpp
+Building file: ../src/CUser_mng.cpp
 Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUserMng.d" -MT"src/CUserMng.o" -o "src/CUserMng.o" "../src/CUserMng.cpp"
-In file included from ../src/CUser.h:11:0,
-                 from ../src/CUserMng.h:12,
-                 from ../src/CUserMng.cpp:8:
-../src/PacketDefine.h:39:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUser_mng.d" -MT"src/CUser_mng.o" -o "src/CUser_mng.o" "../src/CUser_mng.cpp"
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser_mng.h:11,
+                 from ../src/CUser_mng.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
  #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
                   ^
-../src/CUserMng.cpp: In static member function ‘static void* CUserMng::WorkerThread(void*)’:
-../src/CUserMng.cpp:124:12: warning: unused variable ‘cUserMng’ [-Wunused-variable]
-  CUserMng *cUserMng = (CUserMng *)arg;
-            ^~~~~~~~
-Finished building: ../src/CUserMng.cpp
+Finished building: ../src/CUser_mng.cpp
  
-Building file: ../src/CircularBuf.cpp
+Building file: ../src/Circularbuf.cpp
 Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CircularBuf.d" -MT"src/CircularBuf.o" -o "src/CircularBuf.o" "../src/CircularBuf.cpp"
-In file included from ../src/CircularBuf.h:11:0,
-                 from ../src/CircularBuf.cpp:8:
-../src/PacketDefine.h:39:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Circularbuf.d" -MT"src/Circularbuf.o" -o "src/Circularbuf.o" "../src/Circularbuf.cpp"
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/Circularbuf.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
  #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
                   ^
-Finished building: ../src/CircularBuf.cpp
+Finished building: ../src/Circularbuf.cpp
  
-Building file: ../src/Echo_Server_modify.cpp
+Building file: ../src/Data_mng.cpp
 Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Echo_Server_modify.d" -MT"src/Echo_Server_modify.o" -o "src/Echo_Server_modify.o" "../src/Echo_Server_modify.cpp"
-In file included from ../src/CUser.h:11:0,
-                 from ../src/CUserMng.h:12,
-                 from ../src/Echo_Server_modify.cpp:9:
-../src/PacketDefine.h:39:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Data_mng.d" -MT"src/Data_mng.o" -o "src/Data_mng.o" "../src/Data_mng.cpp"
+In file included from ../src/Data_mng.h:15:0,
+                 from ../src/Data_mng.cpp:8:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
  #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
                   ^
-Finished building: ../src/Echo_Server_modify.cpp
+Finished building: ../src/Data_mng.cpp
  
-Building target: Echo_Serv_modify
-Invoking: GCC C++ Linker
-g++  -o "Echo_Serv_modify"  ./src/CEpollMng.o ./src/CUser.o ./src/CUserMng.o ./src/CircularBuf.o ./src/Echo_Server_modify.o   
-Finished building target: Echo_Serv_modify
- 
-09:31:33 **** Clean-only build of configuration Debug for project Echo_Server ****
-make clean 
-rm -rf  ./src/CEpollMng.o ./src/CUserMng.o ./src/CircularBuffer.o ./src/DataMng.o ./src/Echo_Server.o  ./src/CEpollMng.d ./src/CUserMng.d ./src/CircularBuffer.d ./src/DataMng.d ./src/Echo_Server.d  Echo_Server
- 
-09:31:33 **** Build of configuration Debug for project Echo_Server ****
+Building file: ../src/Echo_server_ver3.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Echo_server_ver3.d" -MT"src/Echo_server_ver3.o" -o "src/Echo_server_ver3.o" "../src/Echo_server_ver3.cpp"
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser_mng.h:11,
+                 from ../src/Echo_server_ver3.cpp:13:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+../src/Echo_server_ver3.cpp: In function ‘int main()’:
+../src/Echo_server_ver3.cpp:20:2: error: ‘CUserMng’ was not declared in this scope
+  CUserMng cUserMng;
+  ^~~~~~~~
+../src/Echo_server_ver3.cpp:20:2: note: suggested alternative: ‘CUser_mng’
+  CUserMng cUserMng;
+  ^~~~~~~~
+  CUser_mng
+../src/Echo_server_ver3.cpp:21:2: error: ‘cUserMng’ was not declared in this scope
+  cUserMng.Server_Handling();
+  ^~~~~~~~
+../src/Echo_server_ver3.cpp:21:2: note: suggested alternative: ‘CUser_mng’
+  cUserMng.Server_Handling();
+  ^~~~~~~~
+  CUser_mng
+src/subdir.mk:33: recipe for target 'src/Echo_server_ver3.o' failed
+make: *** [src/Echo_server_ver3.o] Error 1
+"make all" terminated with exit code 2. Build might be incomplete.
+17:08:41 **** Incremental Build of configuration Debug for project Echo_server_ver3 ****
 make all 
-Building file: ../src/CEpollMng.cpp
+Building file: ../src/Echo_server_ver3.cpp
 Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CEpollMng.d" -MT"src/CEpollMng.o" -o "src/CEpollMng.o" "../src/CEpollMng.cpp"
-In file included from ../src/DataMng.h:15:0,
-                 from ../src/CUserMng.h:12,
-                 from ../src/CEpollMng.cpp:9:
-../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Echo_server_ver3.d" -MT"src/Echo_server_ver3.o" -o "src/Echo_server_ver3.o" "../src/Echo_server_ver3.cpp"
+In file included from ../src/Circularbuf.h:11:0,
+                 from ../src/CUser.h:11,
+                 from ../src/CUser_mng.h:11,
+                 from ../src/Echo_server_ver3.cpp:13:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
  #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
                   ^
-Finished building: ../src/CEpollMng.cpp
+Finished building: ../src/Echo_server_ver3.cpp
  
-Building file: ../src/CUserMng.cpp
-Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CUserMng.d" -MT"src/CUserMng.o" -o "src/CUserMng.o" "../src/CUserMng.cpp"
-In file included from ../src/DataMng.h:15:0,
-                 from ../src/CUserMng.h:12,
-                 from ../src/CUserMng.cpp:8:
-../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
- #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
-                  ^
-Finished building: ../src/CUserMng.cpp
- 
-Building file: ../src/CircularBuffer.cpp
-Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/CircularBuffer.d" -MT"src/CircularBuffer.o" -o "src/CircularBuffer.o" "../src/CircularBuffer.cpp"
-In file included from ../src/CircularBuffer.h:14:0,
-                 from ../src/CircularBuffer.cpp:8:
-../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
- #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
-                  ^
-Finished building: ../src/CircularBuffer.cpp
- 
-Building file: ../src/DataMng.cpp
-Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/DataMng.d" -MT"src/DataMng.o" -o "src/DataMng.o" "../src/DataMng.cpp"
-In file included from ../src/DataMng.h:15:0,
-                 from ../src/DataMng.cpp:8:
-../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
- #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
-                  ^
-Finished building: ../src/DataMng.cpp
- 
-Building file: ../src/Echo_Server.cpp
-Invoking: GCC C++ Compiler
-g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Echo_Server.d" -MT"src/Echo_Server.o" -o "src/Echo_Server.o" "../src/Echo_Server.cpp"
-In file included from ../src/DataMng.h:15:0,
-                 from ../src/CUserMng.h:12,
-                 from ../src/Echo_Server.cpp:9:
-../src/PacketDefine.h:41:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
- #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
-                  ^
-Finished building: ../src/Echo_Server.cpp
- 
-Building target: Echo_Server
+Building target: Echo_server_ver3
 Invoking: GCC C++ Linker
-g++  -o "Echo_Server"  ./src/CEpollMng.o ./src/CUserMng.o ./src/CircularBuffer.o ./src/DataMng.o ./src/Echo_Server.o   -lpthread
-Finished building target: Echo_Server
+g++  -o "Echo_server_ver3"  ./src/CEpoll_mng.o ./src/CUser.o ./src/CUser_mng.o ./src/Circularbuf.o ./src/Data_mng.o ./src/Echo_server_ver3.o   -lpthread
+Finished building target: Echo_server_ver3
  
-09:31:34 **** Incremental Build of configuration Debug for project Echo_Server_0918 ****
+17:12:25 **** Incremental Build of configuration Debug for project Echo_client_loop_ver2 ****
 make all 
-make: 'all'을(를) 위해 할 일이 없습니다.
+Building file: ../src/Echo_client_loop_ver2.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Echo_client_loop_ver2.d" -MT"src/Echo_client_loop_ver2.o" -o "src/Echo_client_loop_ver2.o" "../src/Echo_client_loop_ver2.cpp"
+In file included from ../src/Echo_client_loop_ver2.cpp:18:0:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+../src/Echo_client_loop_ver2.cpp: In function ‘int main(int, char**)’:
+../src/Echo_client_loop_ver2.cpp:49:41: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   Error_handling(&sock, "socket() error");
+                                         ^
+../src/Echo_client_loop_ver2.cpp:59:43: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   Error_handling(&sock, "connect() error!");
+                                           ^
+../src/Echo_client_loop_ver2.cpp:30:7: warning: unused variable ‘message’ [-Wunused-variable]
+  char message[MAX_PACKET_SIZE];
+       ^~~~~~~
+../src/Echo_client_loop_ver2.cpp:33:6: warning: unused variable ‘menu’ [-Wunused-variable]
+  int menu;
+      ^~~~
+Finished building: ../src/Echo_client_loop_ver2.cpp
+ 
+Building target: Echo_client_loop_ver2
+Invoking: GCC C++ Linker
+g++  -o "Echo_client_loop_ver2"  ./src/Echo_client_loop_ver2.o   
+Finished building target: Echo_client_loop_ver2
+ 
+17:14:21 **** Incremental Build of configuration Debug for project Echo_client_loop_ver2 ****
+make all 
+Building file: ../src/Echo_client_loop_ver2.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Echo_client_loop_ver2.d" -MT"src/Echo_client_loop_ver2.o" -o "src/Echo_client_loop_ver2.o" "../src/Echo_client_loop_ver2.cpp"
+In file included from ../src/Echo_client_loop_ver2.cpp:18:0:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+../src/Echo_client_loop_ver2.cpp: In function ‘int main(int, char**)’:
+../src/Echo_client_loop_ver2.cpp:49:41: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   Error_handling(&sock, "socket() error");
+                                         ^
+../src/Echo_client_loop_ver2.cpp:59:43: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   Error_handling(&sock, "connect() error!");
+                                           ^
+Finished building: ../src/Echo_client_loop_ver2.cpp
+ 
+Building target: Echo_client_loop_ver2
+Invoking: GCC C++ Linker
+g++  -o "Echo_client_loop_ver2"  ./src/Echo_client_loop_ver2.o   
+Finished building target: Echo_client_loop_ver2
+ 
+17:14:27 **** Incremental Build of configuration Debug for project Echo_client_ver2 ****
+make all 
+Building file: ../src/Echo_client_ver2.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Echo_client_ver2.d" -MT"src/Echo_client_ver2.o" -o "src/Echo_client_ver2.o" "../src/Echo_client_ver2.cpp"
+In file included from ../src/Echo_client_ver2.cpp:19:0:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+../src/Echo_client_ver2.cpp: In function ‘int main(int, char**)’:
+../src/Echo_client_ver2.cpp:49:41: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   Error_handling(&sock, "socket() error");
+                                         ^
+../src/Echo_client_ver2.cpp:59:43: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   Error_handling(&sock, "connect() error!");
+                                           ^
+Finished building: ../src/Echo_client_ver2.cpp
+ 
+Building target: Echo_client_ver2
+Invoking: GCC C++ Linker
+g++  -o "Echo_client_ver2"  ./src/Echo_client_ver2.o   
+./src/Echo_client_ver2.o: In function `main':
+/home/mihyang/Project_source_git/Echo_Server_Project/Echo_client_ver2/Debug/../src/Echo_client_ver2.cpp:120: undefined reference to `Output_menu()'
+/home/mihyang/Project_source_git/Echo_Server_Project/Echo_client_ver2/Debug/../src/Echo_client_ver2.cpp:129: undefined reference to `Output_menu()'
+makefile:45: recipe for target 'Echo_client_ver2' failed
+collect2: error: ld returned 1 exit status
+make: *** [Echo_client_ver2] Error 1
+"make all" terminated with exit code 2. Build might be incomplete.
+17:14:49 **** Incremental Build of configuration Debug for project Echo_client_ver2 ****
+make all 
+Building file: ../src/Echo_client_ver2.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Echo_client_ver2.d" -MT"src/Echo_client_ver2.o" -o "src/Echo_client_ver2.o" "../src/Echo_client_ver2.cpp"
+In file included from ../src/Echo_client_ver2.cpp:19:0:
+../src/Packet_define.h:37:18: warning: junk at end of ‘#pragma pack’ [-Wpragmas]
+ #pragma pack(pop); //정렬 설정을 이전 상태(기본값)로 되돌림
+                  ^
+../src/Echo_client_ver2.cpp: In function ‘int main(int, char**)’:
+../src/Echo_client_ver2.cpp:49:41: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   Error_handling(&sock, "socket() error");
+                                         ^
+../src/Echo_client_ver2.cpp:59:43: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+   Error_handling(&sock, "connect() error!");
+                                           ^
+Finished building: ../src/Echo_client_ver2.cpp
+ 
+Building target: Echo_client_ver2
+Invoking: GCC C++ Linker
+g++  -o "Echo_client_ver2"  ./src/Echo_client_ver2.o   
+Finished building target: Echo_client_ver2
+ 
