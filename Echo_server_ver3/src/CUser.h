@@ -8,22 +8,26 @@
 #ifndef CUSER_H_
 #define CUSER_H_
 
-#include "Circularbuf.h"
+#include "Circular_buffer.h"
 #include "Data_mng.h"
 #include "Packet_define.h"
+
+#define RECV_BUFF 2048
 
 using namespace std;
 
 class CUser {
 private:
 	Queue queue;
-	int m_strlen;
-	list<string> *m_data_list;
-	Circularbuf m_Circularbuf;
+	int m_strlen = 0;
+//	char m_recvbuff[RECV_BUFF];
+	list<string> *m_data_list = nullptr;
+	Circular_buffer m_Circular_buffer;
 	Data_mng m_Data_mng;
+	PACKET m_parsing_pack;
 public:
-	int m_clnt_sock;
-	bool m_clnt_connect;
+	int m_clnt_sock = 0;
+	bool m_clnt_connect = false;
 
 public:
 	CUser();
@@ -32,7 +36,8 @@ public:
 	int Queue_check();
 	int Parsing_data();
 	int Send_data(PACKET pack);
-	int Check_packet(PACKET pack);
+	int Find_packet();
+	int Recvn(int len);
 };
 
 #endif /* CUSER_H_ */

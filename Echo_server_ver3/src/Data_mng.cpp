@@ -22,7 +22,7 @@ Data_mng::Data_mng() {
 Data_mng::~Data_mng() {
 }
 
-int Data_mng::Insert_data(PACKET in_pack, list<string> *data_list) {
+/*int Data_mng::Insert_data(PACKET in_pack, list<string> *data_list) {
 	list<string>::iterator it;
 
 	it = find(data_list->begin(), data_list->end(), in_pack.data);
@@ -89,4 +89,4 @@ int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 //			cout << "[sendResult] clntSock: " << clntSock << ", " << sendR << endl;
 	}
 	return 0;
-}
+}*/

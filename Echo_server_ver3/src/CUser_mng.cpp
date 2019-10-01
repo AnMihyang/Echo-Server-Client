@@ -84,8 +84,8 @@ void CUser_mng::Server_handling()
 					}
 					if(j == MAX_CLIENT-1)
 					{	//접속자 수 처리
-						m_pack.cmd = CMD_USER_ERR;
-						strcpy(m_pack.data, "[ERROR] 접속자 수 초과\n");
+						m_pack.body.cmd = CMD_USER_ERR;
+						strcpy(m_pack.body.data, "[ERROR] 접속자 수 초과\n");
 						send(m_clnt_sock, (char*) &m_pack, sizeof(PACKET), 0);
 						puts("[ERROR] 접속자 수 초과");
 						Close_client(&m_clnt_sock);

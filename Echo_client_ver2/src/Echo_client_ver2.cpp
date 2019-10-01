@@ -28,7 +28,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	int sock;
-	char message[MAX_PACKET_SIZE];
+	char message[MAX_DATA_SIZE];
 
 	struct sockaddr_in serv_adr;
 	string menu;
@@ -60,54 +60,55 @@ int main(int argc, char *argv[])
 	else
 	{
 		puts("Connected...........");
-		pack.cmd = CMD_USER_LOGIN_REQ;
+		pack.body.cmd = CMD_USER_LOGIN_REQ;
 	}
 	cout << "Enter ID: ";
-	fgets(message, MAX_PACKET_SIZE, stdin);
+	fgets(message, MAX_DATA_SIZE, stdin);
 
-	strcpy(pack.data, message);
-	pack.size = strlen(message);
-	cout << pack.size << endl;
+	strncpy(pack.body.data, message, sizeof(pack.body.data));
+//	pack.size = strlen(message);
+	pack.head.datasize = strlen(message);
+
 	// server로 패킷 보내기
 	send(sock, (char*)&pack, sizeof(PACKET), 0);
-	cout << "send : " << pack.cmd << ", " << pack.data << endl;
+	cout << "send : " << pack.body.cmd << ", " << pack.body.data << endl;
 
 	while(1)
 	{
-		recv(sock, (char*) &pack, sizeof(PACKET), 0);
-		cout << "recv : " << pack.cmd << ", " << pack.data << endl;
+		recv(sock, (char*) &pack, sizeof(PACKET), MSG_WAITALL);
+		cout << "recv : " << pack.body.cmd << ", " << pack.body.data << endl;
 		//Command 처리
-		switch (pack.cmd) {
+		switch (pack.body.cmd) {
 		case CMD_USER_LOGIN_RESULT:
 			cout << endl;
 			cout << "<로그인 성공!>" << endl;
 			break;
 
 		case CMD_USER_DATA_RESULT:
-			cout << "\nMessage from server: " << pack.data << endl;
+			cout << "\nMessage from server: " << pack.body.data << endl;
 			break;
 
 		case CMD_USER_SAVE_RESULT:
-			cout << "\n" << pack.data << endl;
+			cout << "\n" << pack.body.data << endl;
 			cout << "\n---Data Structure List---" << endl;
 			Print_recv_list(sock, pack);
 			break;
 
 		case CMD_USER_DELETE_RESULT:
-			cout << "\n" << pack.data << endl;
+			cout << "\n" << pack.body.data << endl;
 			cout << "\n---Data Structure List---" << endl;
 			Print_recv_list(sock, pack);
 			break;
 
 		case CMD_USER_PRINT_RESULT:
-			cout << "\n" << pack.data << endl;
+			cout << "\n" << pack.body.data << endl;
 			cout << "\n---Data Structure List---" << endl;
 			Print_recv_list(sock, pack);
 			break;
 
 		case CMD_USER_ERR:
 			puts("[ERROR] cmd: CMD_USER_ERR");
-			cout << pack.data << endl;
+			cout << pack.body.data << endl;
 			close(sock);
 			return 0;
 
@@ -138,25 +139,25 @@ int main(int argc, char *argv[])
 		{
 			case 1:	//Echo Data
 				fputs("\nInput message: ", stdout);
-				pack.cmd = CMD_USER_DATA_REQ;
+				pack.body.cmd = CMD_USER_DATA_REQ;
 				Message_input_send(&sock, pack);
 				break;
 
 			case 2:	//Save Data
 				cout << "\nEnter message to save: ";
-				pack.cmd = CMD_USER_SAVE_REQ;
+				pack.body.cmd = CMD_USER_SAVE_REQ;
 				Message_input_send(&sock, pack);
 				break;
 
 			case 3:	//Delete Data
 				cout << "\nEnter message to delete: ";
-				pack.cmd = CMD_USER_DELETE_REQ;
+				pack.body.cmd = CMD_USER_DELETE_REQ;
 				Message_input_send(&sock, pack);
 				break;
 
 			case 4:	//Print Data Structure List
-				pack.cmd = CMD_USER_PRINT_REQ;
-				strcpy(pack.data, "CMD_USER_PRINT_REQ");
+				pack.body.cmd = CMD_USER_PRINT_REQ;
+				strncpy(pack.body.data, "CMD_USER_PRINT_REQ", sizeof(pack.body.data));
 				send(sock, (char*)&pack, sizeof(PACKET), 0);
 				break;
 
@@ -188,25 +189,26 @@ void Message_input_send(int *sock, PACKET pack)
 {
 	string message;
 
-	strcpy(pack.data, "\0");
-	cin.ignore(MAX_PACKET_SIZE, '\n');		// \n전까지 입력받음
+	strncpy(pack.body.data, "\0", sizeof(pack.body.data));
+	cin.ignore(MAX_DATA_SIZE, '\n');		// \n전까지 입력받음
 	getline(cin, message);
 
-	strcpy(pack.data, message.c_str());
-	pack.size = strlen(pack.data);
+	strncpy(pack.body.data, message.c_str(), sizeof(pack.body.data));
+//	pack.size = strlen(pack.data);
+	pack.head.datasize = strlen(pack.body.data);
 
 	// server로 패킷 보내기
 	send(*sock, (char*)&pack, sizeof(PACKET),0);
-	cout << "send : " << pack.size << ", " << pack.cmd << ", " << pack.data << endl;
+	cout << "send : " << pack.body.cmd << ", " << pack.body.data << endl;
 }
 
 void Print_recv_list(int sock, PACKET pack)
 {
 	int cnt = 0;
-	while (pack.cmd != CMD_USER_ERR)
+	while (pack.body.cmd != CMD_USER_ERR)
 	{
 		recv(sock, (char*) &pack, sizeof(PACKET), 0);
-		cout << ' ' << ++cnt << ") " << pack.data << endl;
+		cout << ' ' << ++cnt << ") " << pack.body.data << endl;
 	}
 	cout << "-------------------------" << endl;
 }

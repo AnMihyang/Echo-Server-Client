@@ -17,20 +17,16 @@ using namespace std;
 
 CUser::CUser()
 {
-	m_clnt_sock = 0;
-	m_strlen = 0;
-	m_clnt_connect = false;
-	m_data_list = nullptr;
-
-	for(int i = 0; i < QUEUE_SIZE; ++i)
-		queue.pack[i] = (PACKET *)malloc(sizeof(PACKET));	//queue.pack 초기화
+//	for(int i = 0; i < QUEUE_SIZE; ++i)
+//		queue.pack[i] = (PACKET *)malloc(sizeof(PACKET));	//queue.pack 초기화
 
 	queue.front = queue.rear = 0;		//queue 초기화
 }
 
 CUser::~CUser() {
-	for(int i = 0; i < QUEUE_SIZE; ++i)
-			free(queue.pack[i]);	//queue.pack 메모리 해제
+//	for(int i = 0; i < QUEUE_SIZE; ++i)
+
+//			free(queue.pack[i]);	//queue.pack 메모리 해제
 }
 
 // Client로 부터 Packet 받기
@@ -41,10 +37,10 @@ int CUser::Recv_data(int fd, int cUser_num, list<string> *data_list) {
 	PACKET recv_pack;
 	while (1)
 	{
-		//Client로부터 Packet 받기
-		m_strlen = recv(m_clnt_sock, (char*) &recv_pack, sizeof(PACKET), 0);
+//		Client로부터 Packet 받기
+		m_strlen = recv(m_clnt_sock, (char*) &recv_pack, sizeof(PACKET), MSG_WAITALL);;
 
-		cout << endl << "recv 실행" <<endl;
+		cout << endl << "recv 실행" << endl;
 		if (m_strlen == 0)
 		{
 			cout << "strlen: " << m_strlen << endl;
@@ -58,9 +54,10 @@ int CUser::Recv_data(int fd, int cUser_num, list<string> *data_list) {
 		}
 		else
 		{
-			cout << "[Client " << fd << "] Recv: " << recv_pack.cmd << ", " << recv_pack.data << endl;
-			if(!Check_packet(recv_pack))
-				m_Circularbuf.Enqueue(&queue, recv_pack);
+			cout << "[Client " << fd << "] recv: " << recv_pack.body.cmd << ", " << recv_pack.body.data << endl;
+//			if(!Check_packet(recv_pack))
+			m_Circular_buffer.Enqueue(&queue, recv_pack);
+			cout << "[Client " << fd << "] Buffer: " << queue.data << endl;
 			break;
 		} //else end
 	}
@@ -70,7 +67,7 @@ int CUser::Recv_data(int fd, int cUser_num, list<string> *data_list) {
 // 큐에 send할 패킷이 있는지 확인
 int CUser::Queue_check()
 {
-	if(m_Circularbuf.Isempty_queue(&queue))
+	if(m_Circular_buffer.Isempty_queue(&queue))
 		return ERR;								//큐 비었으면 return -1
 	return 0;
 }
@@ -78,7 +75,11 @@ int CUser::Queue_check()
 // Packet Parsing
 int CUser::Parsing_data()
 {
-	PACKET pack;
+	if(Find_packet())
+	{
+		puts("[ERROR] packet not find");
+		return ERR;
+	}
 	/*
 	if(CheckPacket()==ERR)
 	{
@@ -90,25 +91,25 @@ int CUser::Parsing_data()
 	}
 	else
 	{*/
-		memcpy(&pack, queue.pack[queue.front], sizeof(pack));		//받은 packet queue에 복사
-		m_Circularbuf.Dequeue(&queue);
+//		memcpy(&pack, queue.pack[queue.front], sizeof(pack));		//처리할 패킷 큐에서 꺼내서 pack에 복사
+//		m_Circular_buffer.Dequeue(&queue);
 
-		switch (pack.cmd) {
+		switch (m_parsing_pack.body.cmd) {
 			case CMD_USER_LOGIN_REQ:
 				//Client에 패킷 전송
-				pack.cmd = CMD_USER_LOGIN_RESULT;
-				sprintf(pack.data, "%d", m_clnt_sock);
-				return Send_data(pack);
+				m_parsing_pack.body.cmd = CMD_USER_LOGIN_RESULT;
+				sprintf(m_parsing_pack.body.data, "%d", m_clnt_sock);
+				return Send_data(m_parsing_pack);
 
 				//Echo Data 처리
 			case CMD_USER_DATA_REQ:
-				pack.cmd = CMD_USER_DATA_RESULT;
-				return Send_data(pack);
+				m_parsing_pack.body.cmd = CMD_USER_DATA_RESULT;
+				return Send_data(m_parsing_pack);
 
 			//Data 저장 처리
 			case CMD_USER_SAVE_REQ:
-				pack.cmd = CMD_USER_SAVE_RESULT;
-				if(! m_Data_mng.Insert_data(pack, m_data_list))
+				m_parsing_pack.body.cmd = CMD_USER_SAVE_RESULT;
+				/*if(! m_Data_mng.Insert_data(pack, m_data_list))
 					strcpy(pack.data, "[SUCCESS] Data 저장 성공");
 				else
 					strcpy(pack.data, "[FAIL] 이미 저장된 데이터");
@@ -121,43 +122,46 @@ int CUser::Parsing_data()
 					if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
 						return ERR;
 					return 0;
-				}
+				}*/
+				return 0;
 
 			//Data 삭제 처리
 			case CMD_USER_DELETE_REQ:
-				pack.cmd = CMD_USER_DELETE_RESULT;
-				if(! m_Data_mng.Delete_data(pack, m_data_list))
-					strcpy(pack.data, "[SUCCESS] Data 삭제 성공");
+				m_parsing_pack.body.cmd = CMD_USER_DELETE_RESULT;
+				/*if(! m_Data_mng.Delete_data(m_parsing_pack, m_data_list))
+					strcpy(m_parsing_pack.body.data, "[SUCCESS] Data 삭제 성공");
 				else
-					strcpy(pack.data, "[FAIL] list에 해당 데이터 없음");
+					strcpy(m_parsing_pack.body.data, "[FAIL] list에 해당 데이터 없음");
 
-				if(Send_data(pack) == ERR)
+				if(Send_data(m_parsing_pack) == ERR)
 					return ERR;
 				else
 				{
 					if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
 						return ERR;
 					return 0;
-				}
+				}*/
+				return 0;
 
 			//Data list 출력
 			case CMD_USER_PRINT_REQ:
-				pack.cmd = CMD_USER_PRINT_RESULT;
-				strcpy(pack.data, "CMD_USER_PRINT_RESULT");
-				if(Send_data(pack) == ERR)
+				m_parsing_pack.body.cmd = CMD_USER_PRINT_RESULT;
+				strcpy(m_parsing_pack.body.data, "CMD_USER_PRINT_RESULT");
+				/*if(Send_data(pack) == ERR)
 					return ERR;
 				else
 				{
 					if(m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
 						return ERR;
 					return 0;
-				}
+				}*/
+				return 0;
 
 			default:
-				pack.cmd = CMD_USER_ERR;
-				strcpy(pack.data, "Request ERROR");
+				m_parsing_pack.body.cmd = CMD_USER_ERR;
+				strcpy(m_parsing_pack.body.data, "Request ERROR");
 				puts("[ERROR] request error");
-				return Send_data(pack);
+				return Send_data(m_parsing_pack);
 		} //switch
 //	}
 
@@ -165,67 +169,64 @@ int CUser::Parsing_data()
 }
 
 // Client로 Packet 보내기
-int CUser::Send_data(PACKET pack)
+int CUser::Send_data(PACKET send_pack)
 {
-	if(send(m_clnt_sock, (char*) &pack, sizeof(PACKET), 0) == -1)
+	cout << send_pack.body.data << endl;
+	if(send(m_clnt_sock, (char*) &send_pack, sizeof(PACKET), 0) == -1)
 		return ERR;
 	return 0;
 }
 
 //큐에 저장된 패킷 데이터 정상인지 확인 (Packet size 초과 시 예외 처리 하기 (데이터 끊어서 받기))
-int CUser::Check_packet(PACKET pack)
+int CUser::Find_packet()
 {
-	if (strcmp(pack.head, "AA11"))	//head 확인
-	{
-		puts("head");
-		return ERR;
-	}
+	memset(&m_parsing_pack, '\0', sizeof(m_parsing_pack));
+	HEADER hcheck;
+	TAIL tcheck;
+	int tindex;
 
-	/*
-	 if(strcmp(queue.pack[queue.front]->tail, "11AA"))	//tail 확인
-	 {
-	 puts("tail");
-	 return ERR;
-	 }*/
+	cout << "front: " << queue.front << ", rear: " << queue.rear << endl;
+	for (int i = queue.front; queue.rear != NEXT(i); ++i)
+	{
+		memcpy(&hcheck, &queue.data[i], HEAD_SIZE);
+		//큐에서 head 찾기
+		if (!strcmp(hcheck.head, "AA11"))
+		{
+			tindex = HEAD_SIZE + 2 + hcheck.datasize;
+			memcpy(&tcheck, &queue.data[tindex + i], TAIL_SIZE);
+			//tail 확인 되면 큐에있는 데이터 패킷 변수(m_parsing_pack)에 넣기
+			if (!strcmp(tcheck.tail, "11AA"))
+			{
+				memcpy(&m_parsing_pack, &queue.data[i], tindex);
+				memcpy(&m_parsing_pack.tail, &queue.data[tindex + i], TAIL_SIZE);
+				m_Circular_buffer.Dequeue(&queue, tindex + TAIL_SIZE);
+				return 0;
+			}
+		}
+	}//for
 
-	if (pack.cmd <= 0 || pack.cmd > 11)	//cmd 확인
-	{
-		puts("cmd");
-		return ERR;
-	}
-	if (pack.size <= 0)			//size 확인
-	{
-		puts("size");
-		return ERR;
-	}
-
-	/*
-	if(strcmp(queue.pack[queue.front]->head, "AA11"))	//head 확인
-	{
-		puts("head");
-		return ERR;
-	}
-
-	/*
-	if(strcmp(queue.pack[queue.front]->tail, "11AA"))	//tail 확인
-	{
-		puts("tail");
-		return ERR;
-	}
-
-	if(queue.pack[queue.front]->cmd <= 0 || queue.pack[queue.front]->cmd > 11)	//cmd 확인
-	{
-		puts("cmd");
-		return ERR;
-	}
-	if(queue.pack[queue.front]->size <= 0)			//size 확인
-	{
-//		puts("size");
-		return ERR;
-	}*/
-	//TODO: data 확인
-//	cout << "size: " << queue.pack[queue.front]->size << endl;
-	return 0;
+	return -1;
 }
+
+/*
+int CUser::Recvn(int len)
+{
+	int recvd;
+	char *ptr = m_recvbuff;
+	int left = len;
+	while(left > 0)
+	{
+		recvd = recv(m_clnt_sock, ptr, left, 0);
+		if(recvd == -1)
+			return -1;
+		else if(recvd == 0)
+			break;
+
+		left -= recvd;
+		ptr += recvd;
+	}
+	return (len-left);
+}
+*/
 
 
