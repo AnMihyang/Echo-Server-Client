@@ -20,7 +20,7 @@
 
 void Output_menu();											//Menu 출력
 void Message_input_send(int *sock, PACKET pack);			//입력받은 데이터 Server로 Send
-void Print_recv_list(int sock, PACKET pack);				//Server에서 List에 있는 데이터 받아서 출력
+void Print_recv_list(int sock);				//Server에서 List에 있는 데이터 받아서 출력
 void Error_handling(int *sock, char *message);						//error 처리
 
 using namespace std;
@@ -66,8 +66,7 @@ int main(int argc, char *argv[])
 	fgets(message, MAX_DATA_SIZE, stdin);
 
 	strncpy(pack.body.data, message, sizeof(pack.body.data));
-//	pack.size = strlen(message);
-	pack.head.datasize = strlen(message);
+	pack.phead.datasize = strlen(message);
 
 	// server로 패킷 보내기
 	send(sock, (char*)&pack, sizeof(PACKET), 0);
@@ -90,20 +89,17 @@ int main(int argc, char *argv[])
 
 		case CMD_USER_SAVE_RESULT:
 			cout << "\n" << pack.body.data << endl;
-			cout << "\n---Data Structure List---" << endl;
-			Print_recv_list(sock, pack);
+			Print_recv_list(sock);
 			break;
 
 		case CMD_USER_DELETE_RESULT:
 			cout << "\n" << pack.body.data << endl;
-			cout << "\n---Data Structure List---" << endl;
-			Print_recv_list(sock, pack);
+			Print_recv_list(sock);
 			break;
 
 		case CMD_USER_PRINT_RESULT:
 			cout << "\n" << pack.body.data << endl;
-			cout << "\n---Data Structure List---" << endl;
-			Print_recv_list(sock, pack);
+			Print_recv_list(sock);
 			break;
 
 		case CMD_USER_ERR:
@@ -138,19 +134,23 @@ int main(int argc, char *argv[])
 		switch(atoi(menu.c_str()))
 		{
 			case 1:	//Echo Data
-				fputs("\nInput message: ", stdout);
+//				fputs("\nInput message: ", stdout);
+				cout << "\nInput message." << endl;
+				cout << ">> ";
 				pack.body.cmd = CMD_USER_DATA_REQ;
 				Message_input_send(&sock, pack);
 				break;
 
 			case 2:	//Save Data
-				cout << "\nEnter message to save: ";
+				cout << "\nEnter message to save." << endl;
+				cout << ">> ";
 				pack.body.cmd = CMD_USER_SAVE_REQ;
 				Message_input_send(&sock, pack);
 				break;
 
 			case 3:	//Delete Data
-				cout << "\nEnter message to delete: ";
+				cout << "\nEnter message to delete." << endl;
+				cout << ">> ";
 				pack.body.cmd = CMD_USER_DELETE_REQ;
 				Message_input_send(&sock, pack);
 				break;
@@ -188,21 +188,81 @@ void Output_menu()
 void Message_input_send(int *sock, PACKET pack)
 {
 	string message;
+	strncpy(pack.body.data, "\0", sizeof(pack.body.data));	//pack.body.data 초기화
+	cin.ignore(MAX_PRINT_DATA_SIZE-1, '\n');		// \n전까지 입력받음
+	while(1)
+	{
+//		message = "";
+//		cin.clear();			//버퍼 초기화
+//		cin.ignore();
 
-	strncpy(pack.body.data, "\0", sizeof(pack.body.data));
-	cin.ignore(MAX_DATA_SIZE, '\n');		// \n전까지 입력받음
-	getline(cin, message);
+		getline(cin, message);
+		cin.clear();
+		cout << "length: " << message.length() << endl;
+
+		if(message.length() < MAX_PRINT_DATA_SIZE)
+			break;
+
+		cout << "Data size exceeded. Please enter again." << endl;
+		cout << ">> ";
+	}
 
 	strncpy(pack.body.data, message.c_str(), sizeof(pack.body.data));
-//	pack.size = strlen(pack.data);
-	pack.head.datasize = strlen(pack.body.data);
+	pack.phead.datasize = strlen(pack.body.data);
 
 	// server로 패킷 보내기
 	send(*sock, (char*)&pack, sizeof(PACKET),0);
 	cout << "send : " << pack.body.cmd << ", " << pack.body.data << endl;
 }
 
-void Print_recv_list(int sock, PACKET pack)
+void Print_recv_list(int sock)
+{
+	PRT_PACKET recv_pack;
+	char temp[MAX_DATA_SIZE];
+	int num = 0;
+
+	memset(temp, '\0', MAX_DATA_SIZE);
+	memset(recv_pack.data, '\0', sizeof(recv_pack.data));
+
+	cout << "\n------Data Structure List------" << endl;
+
+	do
+	{
+		recv(sock, (char*) &recv_pack, sizeof(PRT_PACKET), MSG_WAITALL);
+
+		if(!recv_pack.data_num)
+			cout << recv_pack.data << endl;
+
+		for (unsigned int i = 0, index = 0; i < recv_pack.data_num; i++) {
+			num++;
+			strcpy(temp, &recv_pack.data[index]);
+			cout << num << ") " << temp << endl;
+			index += strlen(temp) + 1;
+//			cout << "index: " << index << endl;
+		}
+	} while (recv_pack.cmd != CMD_USER_ERR);
+	cout << "-------------------------------" << endl;
+}
+
+/*void Print_recv_list(int sock)
+{
+	PRT_PACKET recv_pack;
+	char *tok;
+	int data_cnt = 0;
+	cout << "\n---Data Structure List---" << endl;
+	do
+	{
+		recv(sock, (char*)&recv_pack, sizeof(PRT_PACKET), MSG_WAITALL);
+		tok = strtok(recv_pack.data, "#;;");
+		while(tok != NULL)
+		{
+			cout << ++data_cnt << ") " << tok << endl;
+			tok = strtok(NULL, "#;;");
+		}
+	} while(recv_pack.cmd != CMD_USER_ERR);
+}*/
+
+/*void Print_recv_list(int sock, PACKET pack)
 {
 	int cnt = 0;
 	while (pack.body.cmd != CMD_USER_ERR)
@@ -211,7 +271,7 @@ void Print_recv_list(int sock, PACKET pack)
 		cout << ' ' << ++cnt << ") " << pack.body.data << endl;
 	}
 	cout << "-------------------------" << endl;
-}
+}*/
 
 void Error_handling(int *sock, char *message)
 {

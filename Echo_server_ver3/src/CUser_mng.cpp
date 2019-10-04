@@ -69,11 +69,11 @@ void CUser_mng::Server_handling()
 
 			if (m_events[i].data.fd == m_serv_sock)
 			{
-				Connect_client();
 				pthread_mutex_lock(&m_clntlock);
+				Connect_client();		//클라이언트 연결
+
 				for(int j = 0; j < MAX_CLIENT; j++)
 				{
-
 					//clntSocks배열에 client socket 부여하기
 					if(m_clnt_socks[j] == 0)
 					{
@@ -96,25 +96,39 @@ void CUser_mng::Server_handling()
 			else
 			{
 //				cout << "event: " << m_events[i].events << endl;
+				pthread_mutex_lock(&m_clntlock);
 //				if(m_events[i].events == EPOLLIN)
 //				{
-				pthread_mutex_lock(&m_clntlock);
-				for (int j = 0; j < MAX_CLIENT; j++)
-					if (m_clnt_socks[j] == m_events[i].data.fd) {
-
-						if (m_CUser[j].Recv_data(m_events[i].data.fd, j,
-								&m_dataList) == ERR) {
+					for (int j = 0; j < MAX_CLIENT; j++)
+					{
+						if (m_clnt_socks[j] == m_events[i].data.fd)
+						{
+							if (m_CUser[j].Recv_data(m_events[i].data.fd, j, &m_dataList) == ERR)
+							{
+								m_CUser[j].m_clnt_connect = false;
+								m_CUser[j].m_clnt_sock = 0;
+								Close_client(&m_events[i].data.fd);
+								m_clnt_socks[j] = 0;
+							}
+							break;
+						}
+					}
+/*
+				}
+				else if(m_events[i].events == EPOLLRDHUP)
+				{
+					for (int j = 0; j < MAX_CLIENT; j++)
+						if (m_clnt_socks[j] == m_events[i].data.fd)
+						{
 							m_CUser[j].m_clnt_connect = false;
 							m_CUser[j].m_clnt_sock = 0;
 							Close_client(&m_events[i].data.fd);
 							m_clnt_socks[j] = 0;
+
+							break;
 						}
-
-						break;
-					}
+				}*/
 				pthread_mutex_unlock(&m_clntlock);
-//				}
-
 				/*else
 				{
 					for (int j = 0; j < MAX_CLIENT; j++)
@@ -182,40 +196,11 @@ void * CUser_mng::User_check_thread(void * arg)
 		cout << "-----------User Check-----------" << endl;
 		pthread_mutex_lock(&cUserMng->m_clntlock);
 
-		/*
-		if (cUserMng->m_event.events == EPOLLRDHUP)
-		{
-			for (int i = 0; i < MAX_CLIENT; ++i)
-			{
-				//클라이언트 연결 끊기
-				if (cUserMng->m_CUser[i].m_clntSock == cUserMng->m_event.data.fd)
-				{
-					cout << "[Disconnected] CUser" << i << " - Client " << cUserMng->m_CUser[i].m_clntSock << endl;
-					cUserMng->Close_Client(&cUserMng->m_event.data.fd);
-					cUserMng->m_CUser[i].m_clntSock = 0;
-					cUserMng->m_CUser[i].m_clntConnect = false;
-				}
-			}
-		}*/
-
 		for(int i = 0; i < MAX_CLIENT; ++i)
 		{
-
-			/*if (cUserMng->m_event.events == EPOLLRDHUP)
-			{
-				//클라이언트 연결 끊기
-				if (cUserMng->m_CUser[i].m_clntSock == cUserMng->m_event.data.fd)
-				{
-					cout << "[Disconnected] CUser" << i << " - Client " << cUserMng->m_CUser[i].m_clntSock << endl;
-					cUserMng->Close_Client(&cUserMng->m_event.data.fd);
-					cUserMng->m_CUser[i].m_clntSock = 0;
-					cUserMng->m_CUser[i].m_clntConnect = false;
-				}
-			}*/
-
 			if(cUserMng->m_CUser[i].m_clnt_connect == true)
 			{
-				if(cUserMng->m_CUser[i].m_clnt_sock == 0)	 //|| cUserMng->m_event.events != EPOLLRDHUP
+				if(cUserMng->m_CUser[i].m_clnt_sock == 0)
 				{
 					//클라이언트 연결 끊기
 					cout << "[Disconnected] CUser" << i << " - Client " << cUserMng->m_CUser[i].m_clnt_sock << endl;
@@ -259,7 +244,7 @@ void * CUser_mng::Worker_thread(void *arg)
 			usleep(100);
 		}
 		pthread_mutex_unlock(&cUserMng->m_clntlock);
-		usleep(300000);
+		usleep(200000);
 	}
 
 	pthread_mutex_destroy(&tmutex);

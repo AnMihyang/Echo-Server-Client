@@ -22,6 +22,7 @@
 #define CMD_USER_ERR 0x0B
 
 #define MAX_DATA_SIZE 1023
+#define MAX_PRINT_DATA_SIZE 5000
 
 #pragma pack(push, 1)	//1byte 정렬
 
@@ -42,14 +43,21 @@ typedef struct PACKET_TAIL
 	char tail[5] = {"11AA"};
 }TAIL;
 
-typedef struct Milestone_Packet
+typedef struct MILESTONE_PACKET
 {
-	HEADER head;
+	HEADER phead;
 	BODY body;
 //	unsigned short cmd;
 //	char data[MAX_DATA_SIZE];
-	TAIL tail;
+	TAIL ptail;
 }PACKET;
+
+typedef struct PRINT_PACKET
+{
+	unsigned short cmd;
+	unsigned int data_num;
+	char data[10];
+}PRT_PACKET;
 
 #pragma pack(pop)	//정렬 설정을 이전 상태(기본값)로 되돌림
 

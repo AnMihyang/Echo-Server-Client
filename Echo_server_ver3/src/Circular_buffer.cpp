@@ -26,56 +26,45 @@ Circular_buffer::~Circular_buffer() {
 int Circular_buffer::Enqueue(Queue *queue, PACKET recv_pack)
 {
 //	char *ptr;
-	int body_size = strlen(recv_pack.body.data)+2;
-	int nrear = HEAD_SIZE + body_size + TAIL_SIZE;;
+//	int body_size = strlen(recv_pack.body.data)+2;
+//	int nrear = HEAD_SIZE + body_size + TAIL_SIZE;;
 
-	if (Isfull_queue(queue, sizeof(recv_pack)))
+	if (Isfull_queue(queue, sizeof(PACKET)))
 	{
 		//		queue->front = NEXT(queue->front);
 		puts("[FAIL] CircularBuffer full");
 		return 0;
 	}
-//	memcpy(&queue->data[queue->rear], &recvPack, sizeof(recvPack));
-//	memcpy(queue->data+queue->rear, &recvPack, sizeof(recvPack));
-	memcpy(&queue->data[queue->rear], &recv_pack.head, HEAD_SIZE);
+	if(QUEUE_SIZE < queue->rear + sizeof(PACKET))
+	{
+		memcpy(&queue->data[queue->rear], &recv_pack, QUEUE_SIZE-queue->rear);
+		memcpy(&queue->data[0], &recv_pack+(QUEUE_SIZE-queue->rear), sizeof(PACKET)-(QUEUE_SIZE-queue->rear));
+	}
+	else
+		memcpy(&queue->data[queue->rear], &recv_pack, sizeof(PACKET));
+
+	/*memcpy(&queue->data[queue->rear], &recv_pack.head, HEAD_SIZE);
 	memcpy(&queue->data[queue->rear+HEAD_SIZE], &recv_pack.body, body_size);
-	memcpy(&queue->data[queue->rear+HEAD_SIZE+body_size], &recv_pack.tail, TAIL_SIZE);
+	memcpy(&queue->data[queue->rear+HEAD_SIZE+body_size], &recv_pack.tail, TAIL_SIZE);*/
 
-//	memcpy(queue->data+queue->rear, &recvPack.header, HEAD_SIZE);
-//	memcpy(queue->data+queue->rear+HEAD_SIZE, &recvPack.body, 2+len);
-//	memcpy(queue->data+queue->rear+HEAD_SIZE+2+len, &recvPack.tailer.tail, TAIL_SIZE);
+//	memcpy(&queue->data[queue->rear], &recv_pack, sizeof(recv_pack));
 
-
-//	memcpy(&c[sizeof(recvPack.header) + sizeof(recvPack.body)], &recvPack.tailer.tail, 5);
-
-/*
-	ptr = (char *)malloc(6000);
-	memcpy(ptr, &recvPack.header.head, 5);
-	memcpy(ptr+5, (char *)&recvPack.header.datasize, 4);
-
-	cout << ptr << endl;*/
-
-//	len = sprintf(&queue->data[queue->rear], "%s%u#%X%s%s", recvPack.header.head, recvPack.header.datasize,
-//			recvPack.cmd, recvPack.data, recvPack.tailer.tail);
-
-//	cout << len << endl;
-//	memcpy(&queue->data[queue->rear], &recvPack.header.head, sizeof(recvPack));
-//	(PACKET *)queue->data[queue->rear] = recvPack;
-
-	queue->rear = NEXT(queue->rear+nrear);
+//	queue->rear = NEXT(queue->rear+nrear);
+	queue->rear = NEXT((queue->rear+sizeof(PACKET)));
+	cout << "front: " << queue->front << ", rear: " << queue->rear << endl;
 	return 0;
 }
 
 //TODO:Dequeue 수정하기
-int Circular_buffer::Dequeue(Queue *queue, int dequeue_size)
+int Circular_buffer::Dequeue(Queue *queue)
 {
-	cout << "dequeue: " << dequeue_size << endl;
+//	cout << "dequeue: " << dequeue_size << endl;
 	if(Isempty_queue(queue))
 		puts("[ERROR] Empty Queue");
 
 //	queue->pack[queue->front] = (PACKET *)malloc(sizeof(PACKET));
 
-	queue->front = NEXT(queue->front+dequeue_size);
+	queue->front = NEXT(queue->front+sizeof(PACKET));
 
 //	if(!IsEmpty_Queue(queue))
 //		PrintQueueData();

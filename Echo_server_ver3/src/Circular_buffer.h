@@ -10,7 +10,7 @@
 
 #include "Packet_define.h"
 
-#define QUEUE_SIZE 60000
+#define QUEUE_SIZE 10000
 #define HEAD_SIZE sizeof(HEADER)
 #define TAIL_SIZE sizeof(TAIL)
 #define NEXT(index) (index%QUEUE_SIZE)
@@ -30,7 +30,7 @@ public:
 	int Isempty_queue(Queue *queue);
 	bool Isfull_queue(Queue *queue, int recv_size);
 	int Enqueue(Queue *queue, PACKET recvPack);
-	int Dequeue(Queue *queue, int dequeue_size);
+	int Dequeue(Queue *queue);
 };
 
 #endif /* CIRCULAR_BUFFER_H_ */

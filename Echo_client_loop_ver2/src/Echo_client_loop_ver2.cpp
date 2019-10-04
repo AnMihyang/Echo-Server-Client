@@ -1,12 +1,12 @@
 //============================================================================
-// Name        : Echo_Client_loop_modify.cpp
+// Name        : Echo_Client_modify.cpp
 // Author      :
 // Version     :
 // Copyright   : Your copyright notice
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
-//----현재 수정중인 Client 메뉴 랜덤 반복 (Echo_server_ver3 프로젝트와 통신)----
+//----현재 수정중인 Client (Echo_server_ver3 프로젝트와 통신)----
 
 #include <iostream>
 #include <list>
@@ -15,22 +15,23 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+
 #include "Packet_define.h"
 
-//void Output_menu();											//Menu 출력
+void Output_menu();											//Menu 출력
 void Message_input_send(int *sock, PACKET pack);			//입력받은 데이터 Server로 Send
-int Print_recv_list(int *sock);				//Server에서 List에 있는 데이터 받아서 출력
+void Print_recv_list(int sock);				//Server에서 List에 있는 데이터 받아서 출력
 void Error_handling(int *sock, char *message);						//error 처리
-int Recvn(int *sock, char *buf, int len, int flags);
+
 using namespace std;
 
 int main(int argc, char *argv[])
 {
 	int sock;
-//	char message[MAX_PACKET_SIZE];
+	char message[MAX_DATA_SIZE];
 
 	struct sockaddr_in serv_adr;
-//	int menu;
+	int menu;
 	PACKET pack;
 
 	/*
@@ -38,8 +39,7 @@ int main(int argc, char *argv[])
 	if(argc!=3){
 		printf("Usage : %s <IP> <port>\n", argv[0]);
 		exit(1);
-	}
-	*/
+	}*/
 
 	//소켓 생성
 	sock=socket(PF_INET, SOCK_STREAM, 0);
@@ -51,8 +51,8 @@ int main(int argc, char *argv[])
 	//serv_adr 초기화
 	memset(&serv_adr, 0, sizeof(serv_adr));
 	serv_adr.sin_family=AF_INET;
-	serv_adr.sin_addr.s_addr=inet_addr("192.168.8.37");
-	serv_adr.sin_port=htons(9190);
+	serv_adr.sin_addr.s_addr = inet_addr("192.168.8.37");
+	serv_adr.sin_port = htons(9190);
 
 	//server에 연결 요청 후 에러 처리
 	if(connect(sock, (struct sockaddr*)&serv_adr, sizeof(serv_adr)) == -1)
@@ -60,98 +60,115 @@ int main(int argc, char *argv[])
 	else
 	{
 		puts("Connected...........");
-		pack.cmd = CMD_USER_LOGIN_REQ;
+		pack.body.cmd = CMD_USER_LOGIN_REQ;
 	}
-//	cout << "Enter ID: ";
-//	fgets(message, MAX_PACKET_SIZE, stdin);
+	cout << "Enter ID: ";
+//	fgets(message, MAX_DATA_SIZE, stdin);
 
-	strcpy(pack.data, "login");
-	pack.size = strlen(pack.data);
+	strncpy(pack.body.data, "login", sizeof(pack.body.data));
+	pack.phead.datasize = strlen(pack.body.data);
+//	strncpy(pack.body.data, "login", MAX_DATA_SIZE);
+//	pack.phead.datasize = strlen(pack.body.data);
+
+//	strncpy(pack.body.data, message, sizeof(pack.body.data));
+//	pack.phead.datasize = strlen(message);
+
 	// server로 패킷 보내기
 	send(sock, (char*)&pack, sizeof(PACKET), 0);
-//	cout << "send : " << pack.cmd << ", " << pack.data << endl;
-	pack.size = 0;
+	cout << "send : " << pack.body.cmd << ", " << pack.body.data << endl;
 
 	srand(time(NULL));
 
 	while(1)
 	{
-		recv(sock, (char*) &pack, sizeof(PACKET), 0);
-//		cout << "recv : " << pack.cmd << ", " << pack.data << endl;
+		recv(sock, (char*) &pack, sizeof(PACKET), MSG_WAITALL);
+		cout << "recv : " << pack.body.cmd << ", " << pack.body.data << endl;
 		//Command 처리
-		switch (pack.cmd) {
+		switch (pack.body.cmd) {
 		case CMD_USER_LOGIN_RESULT:
-			cout << endl << "<로그인 성공!>" << endl;
-			cout << "sock: " << pack.data << endl;
+			cout << endl;
+			cout << "<로그인 성공!>" << endl;
 			break;
 
 		case CMD_USER_DATA_RESULT:
-			cout << endl << "Message from server:" << endl;
-			cout << " >> " << pack.data << endl;
+			cout << "\nMessage from server: " << pack.body.data << endl;
 			break;
 
 		case CMD_USER_SAVE_RESULT:
-			cout << endl << pack.data << endl;
-			cout << endl << "---Data Structure List---" << endl;
-			if(Print_recv_list(&sock))
-				cout << "[ERROR] print list error" << endl;
+			cout << "\n" << pack.body.data << endl;
+			cout << "\n---Data Structure List---" << endl;
+			Print_recv_list(sock);
 			break;
 
 		case CMD_USER_DELETE_RESULT:
-			cout << endl << pack.data << endl;
-			cout << endl << "---Data Structure List---" << endl;
-			if(Print_recv_list(&sock))
-				cout << "[ERROR] print list error" << endl;
+			cout << "\n" << pack.body.data << endl;
+			cout << "\n---Data Structure List---" << endl;
+			Print_recv_list(sock);
 			break;
 
 		case CMD_USER_PRINT_RESULT:
-			cout << endl << pack.data << endl;
-			cout << endl << "---Data Structure List---" << endl;
-			if(Print_recv_list(&sock))
-				cout << "[ERROR] Print list error" << endl;
+			cout << "\n" << pack.body.data << endl;
+			cout << "\n---Data Structure List---" << endl;
+			Print_recv_list(sock);
 			break;
 
 		case CMD_USER_ERR:
-			cout << "[ERROR] " << pack.data << endl;
-//			close(sock);
-//			return 0;
-			break;
+			puts("[ERROR] cmd: CMD_USER_ERR");
+			cout << pack.body.data << endl;
+			close(sock);
+			return 0;
 
 		default:
 			puts("[ERROR] Result command error");
-			cout << "[CMD] " << pack.cmd << endl;
 			close(sock);
 			return 0;
 		}
 
 		usleep(700000);
-//		menu = rand()%4+1;
+
+/*		Output_menu();
+		cin >> menu;
+
+		while(1)	// 1~5 사이가 아닌 다른 값 입력 시 다시 입력 받음
+		{
+			if (atoi(menu.c_str()) < 1 || atoi(menu.c_str()) > 5)
+			{
+				cout << endl;
+				cout << "!!try again!!" << endl;
+				Output_menu();
+				cin >> menu;
+			}
+			else
+				break;
+		}*/
+
+		menu = rand()%3+1;
 
 		//Server로 Packet Send
 		switch(2)
 		{
 			case 1:	//Echo Data
-				cout << endl << "Input message: " << endl;
-				cout << " >> ";
-				pack.cmd = CMD_USER_DATA_REQ;
+//				fputs("\nInput message: ", stdout);
+				cout << "\nInput message >>" << endl;
+				pack.body.cmd = CMD_USER_DATA_REQ;
 				Message_input_send(&sock, pack);
 				break;
 
 			case 2:	//Save Data
-				cout << endl << "Enter message to save: ";
-				pack.cmd = CMD_USER_SAVE_REQ;
+				cout << "\nEnter message to save: ";
+				pack.body.cmd = CMD_USER_SAVE_REQ;
 				Message_input_send(&sock, pack);
 				break;
 
 			case 3:	//Delete Data
-				cout << endl << "Enter message to delete: ";
-				pack.cmd = CMD_USER_DELETE_REQ;
+				cout << "\nEnter message to delete: ";
+				pack.body.cmd = CMD_USER_DELETE_REQ;
 				Message_input_send(&sock, pack);
 				break;
 
 			case 4:	//Print Data Structure List
-				pack.cmd = CMD_USER_PRINT_REQ;
-				strcpy(pack.data, "CMD_USER_PRINT_REQ");
+				pack.body.cmd = CMD_USER_PRINT_REQ;
+				strncpy(pack.body.data, "CMD_USER_PRINT_REQ", sizeof(pack.body.data));
 				send(sock, (char*)&pack, sizeof(PACKET), 0);
 				break;
 
@@ -167,97 +184,97 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-/*
-void outputMenu()
+void Output_menu()
 {
 	printf("\n--------Menu--------\n");
-	printf(" 1. Input echo data\n");
-	printf(" 2. Save data\n");
-	printf(" 3. Delete data\n");
-	printf(" 4. Data list\n");
-	printf(" 5. Exit\n");
+	printf(" 1. Input Echo Data\n");
+	printf(" 2. Save Data\n");
+	printf(" 3. Delete Data\n");
+	printf(" 4. Data List\n");
+	printf(" 5. exit\n");
 	printf(" >> ");
 }
 
-void message_Input_Send(int *sock, PACKET pack)
+
+/*void Message_input_send(int *sock, PACKET pack)
 {
 	string message;
 
-	strcpy(pack.data, "\0");
-	cin.ignore(MAX_PACKET_SIZE, '\n');		// \n전까지 입력받음
+	strncpy(pack.body.data, "\0", sizeof(pack.body.data));
+	cin.ignore(MAX_DATA_SIZE, '\n');		// \n전까지 입력받음
 	getline(cin, message);
 
-	strcpy(pack.data, message.c_str());
-	pack.size = strlen(pack.data);
+	strncpy(pack.body.data, message.c_str(), sizeof(pack.body.data));
+//	pack.size = strlen(pack.data);
+	pack.phead.datasize = strlen(pack.body.data);
 
 	// server로 패킷 보내기
 	send(*sock, (char*)&pack, sizeof(PACKET),0);
-	cout << "send : " << pack.size << ", " << pack.cmd << ", " << pack.data << endl;
-}
-*/
+	cout << "send : " << pack.body.cmd << ", " << pack.body.data << endl;
+}*/
 
 void Message_input_send(int *sock, PACKET pack)
 {
-	int datalen = rand()%100+1;
-	for(int i = 0; i < datalen; ++i)
+	int datalen;
+
+	memset(pack.body.data, '\0', MAX_DATA_SIZE);
+	pack.phead.datasize = 0;
+
+	while(1)
 	{
-		pack.data[i] = rand()%94 + 33;
+		datalen = rand() % 100 + 1;
+		if (datalen < MAX_PRINT_DATA_SIZE)
+			break;
 	}
-	pack.data[datalen] = '\0';
-	pack.size = strlen(pack.data);
+	for (int i = 0; i < datalen; ++i)
+		pack.body.data[i] = rand() % 94 + 33;
 
-	cout << pack.data << endl;
-
+	pack.body.data[datalen] = '\0';
+	cout << pack.body.data << endl;
+	pack.phead.datasize = strlen(pack.body.data);
 	// server로 패킷 보내기
 	send(*sock, (char*)&pack, sizeof(PACKET),0);
-	pack.size = 0;
 }
 
-
-int Print_recv_list(int *sock)
+void Print_recv_list(int sock)
 {
-	PACKET pack;
-	int cnt = 0;
-	int Rresult = 0;
+	PRT_PACKET recv_pack;
+	char temp[MAX_DATA_SIZE];
+	int num = 0;
 
-	do {
-		Rresult = Recvn(sock, (char*) &pack, sizeof(PACKET), 0);
+	memset(temp, '\0', MAX_DATA_SIZE);
+	memset(recv_pack.data, '\0', sizeof(recv_pack.data));
 
-//		if(recvR == -1)
-//			return -1;
-//		else
-		if (Rresult != 8112)
-		{
-			cout << "recvResult: " << Rresult << endl;
-			return -1;
-		}
-		if (pack.cmd == 0 || !strcmp(pack.data, "\0"))
-			return -1;
-		cout << ' ' << ++cnt << ") " << pack.cmd << ", " << pack.data << endl;
-	} while(pack.cmd != CMD_USER_ERR);
-	cout << "-------------------------" << endl;
+	cout << "\n------Data Structure List------" << endl;
 
-	return 0;
-}
-
-int Recvn(int *sock, char *buf, int len, int flags)
-{
-	int recvd;
-	char *ptr = buf;
-	int left = len;
-	while(left > 0)
+	do
 	{
-		recvd = recv(*sock, ptr, left, 0);
-		if(recvd == -1)
-			return -1;
-		else if(recvd == 0)
-			break;
+		recv(sock, (char*) &recv_pack, sizeof(PRT_PACKET), MSG_WAITALL);
 
-		left -= recvd;
-		ptr += recvd;
-	}
-	return (len-left);
+		if(!recv_pack.data_num)
+					cout << recv_pack.data << endl;
+
+		for (unsigned int i = 0, index = 0; i < recv_pack.data_num; i++) {
+			num++;
+			strcpy(temp, &recv_pack.data[index]);
+			cout << num << ") " << temp << endl;
+			index += strlen(temp) + 1;
+//			cout << "index: " << index << endl;
+		}
+	} while (recv_pack.cmd != CMD_USER_ERR);
+	cout << "-------------------------------" << endl;
 }
+/*
+void Print_recv_list(int sock, PACKET pack)
+{
+	int cnt = 0;
+	while (pack.body.cmd != CMD_USER_ERR)
+	{
+		recv(sock, (char*) &pack, sizeof(PACKET), 0);
+		cout << ' ' << ++cnt << ") " << pack.body.data << endl;
+	}
+	cout << "-------------------------" << endl;
+}*/
 
 void Error_handling(int *sock, char *message)
 {
