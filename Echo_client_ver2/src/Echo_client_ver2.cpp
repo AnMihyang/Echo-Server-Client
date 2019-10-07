@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 	while(1)
 	{
 		recv(sock, (char*) &pack, sizeof(PACKET), MSG_WAITALL);
-		cout << "recv : " << pack.body.cmd << ", " << pack.body.data << endl;
+//		cout << "recv : " << pack.body.cmd << ", " << pack.body.data << endl;
 		//Command 처리
 		switch (pack.body.cmd) {
 		case CMD_USER_LOGIN_RESULT:
@@ -84,7 +84,8 @@ int main(int argc, char *argv[])
 			break;
 
 		case CMD_USER_DATA_RESULT:
-			cout << "\nMessage from server: " << pack.body.data << endl;
+			cout << "\nMessage from server." << endl;
+			cout << ">> " << pack.body.data << endl;
 			break;
 
 		case CMD_USER_SAVE_RESULT:
@@ -98,7 +99,7 @@ int main(int argc, char *argv[])
 			break;
 
 		case CMD_USER_PRINT_RESULT:
-			cout << "\n" << pack.body.data << endl;
+//			cout << "\n" << pack.body.data << endl;
 			Print_recv_list(sock);
 			break;
 
@@ -158,6 +159,7 @@ int main(int argc, char *argv[])
 			case 4:	//Print Data Structure List
 				pack.body.cmd = CMD_USER_PRINT_REQ;
 				strncpy(pack.body.data, "CMD_USER_PRINT_REQ", sizeof(pack.body.data));
+				pack.phead.datasize = strlen(pack.body.data);
 				send(sock, (char*)&pack, sizeof(PACKET), 0);
 				break;
 
@@ -189,14 +191,14 @@ void Message_input_send(int *sock, PACKET pack)
 {
 	string message;
 	strncpy(pack.body.data, "\0", sizeof(pack.body.data));	//pack.body.data 초기화
-	cin.ignore(MAX_PRINT_DATA_SIZE-1, '\n');		// \n전까지 입력받음
+	cin.ignore(MAX_DATA_SIZE, '\n');		// \n전까지 입력받음
 	while(1)
 	{
 		getline(cin, message);
 		cin.clear();				//버퍼 초기화
-		cout << "length: " << message.length() << endl;
+//		cout << "length: " << message.length() << endl;
 
-		if(message.length() < MAX_PRINT_DATA_SIZE)
+		if(message.length() < MAX_DATA_SIZE)
 			break;
 
 		cout << "Data size exceeded. Please enter again." << endl;
@@ -208,7 +210,7 @@ void Message_input_send(int *sock, PACKET pack)
 
 	// server로 패킷 보내기
 	send(*sock, (char*)&pack, sizeof(PACKET),0);
-	cout << "send : " << pack.body.cmd << ", " << pack.body.data << endl;
+//	cout << "send : " << pack.body.cmd << ", " << pack.body.data << endl;
 }
 
 void Print_recv_list(int sock)

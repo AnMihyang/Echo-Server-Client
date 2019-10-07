@@ -56,7 +56,7 @@ typedef struct PRINT_PACKET
 {
 	unsigned short cmd;
 	unsigned int data_num;
-	char data[10];
+	char data[MAX_PRINT_DATA_SIZE];
 }PRT_PACKET;
 
 #pragma pack(pop)	//정렬 설정을 이전 상태(기본값)로 되돌림

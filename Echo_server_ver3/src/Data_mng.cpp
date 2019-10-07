@@ -17,7 +17,6 @@
 using namespace std;
 
 Data_mng::Data_mng() {
-
 }
 
 Data_mng::~Data_mng() {
@@ -58,13 +57,12 @@ void Data_mng::Print_data_list(list<string> *data_list)
 	for (list<string>::iterator it = data_list->begin(); it != data_list->end();
 			it++)
 		cout << ++cnt << ") " << *it << endl;
-	cout << "-------------------------------------------------------------" <<endl;
+	cout << endl;
 }
 
-//TODO: Test 해보기 (packet size 초과 시 예외처리 하기)
 int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 {
-	int r;
+	int sresult;
 	PRT_PACKET print_pack;
 	unsigned int data_cnt = 1;
 	unsigned int pindex = 0;
@@ -77,7 +75,7 @@ int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 	if (data_list->empty())
 	{
 		print_pack.cmd = CMD_USER_ERR;
-		strncpy(print_pack.data, "          !!Empty!!\0", sizeof(print_pack.data));
+		strncpy(print_pack.data, "            !!Empty!!\0", sizeof(print_pack.data));
 		print_pack.data_num = 0;
 		if (send(clnt_sock, (char*) &print_pack, sizeof(PRT_PACKET), 0) == -1)
 			return -1;
@@ -85,7 +83,6 @@ int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 
 	for (list<string>::iterator it = data_list->begin(); it != data_list->end(); ++data_cnt, ++it)
 	{
-
 		send_msg = *it+'\0';
 
 		if(sizeof(print_pack.data) < pindex+send_msg.length())
@@ -101,35 +98,15 @@ int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 		strncpy(&print_pack.data[pindex], send_msg.c_str(), send_msg.length());
 		pindex += send_msg.length();
 
-		if (data_cnt >= data_list->size())
-					print_pack.cmd = CMD_USER_ERR;
+		if (data_cnt >= data_list->size())		//list 다 돌았으면 CMD_USER_ERR 저장
+			print_pack.cmd = CMD_USER_ERR;
 
-
-		/*if( sizeof(print_pack.data) >= pindex+send_msg.length())
-		{
-			//print_pack.data에 list 데이터 저장
-			strncpy(&print_pack.data[pindex], send_msg.c_str(), send_msg.length());
-			pindex += send_msg.length();
-		}
-		else
-		{
-			print_pack.data_num = cnt;
-			cout << "cnt: " <<cnt <<endl;
-			if (send(clnt_sock, (char*) &print_pack, sizeof(PACKET), 0) == -1)
-				return -1;
-			memset(&print_pack, '\0', sizeof(PRT_PACKET));
-			pindex = 0;
-			cnt = 0;
-			strncpy(&print_pack.data[pindex], send_msg.c_str(), send_msg.length());
-		}*/
 		if(print_pack.cmd == CMD_USER_ERR)
 		{
 			print_pack.data_num = cnt;
-			r = send(clnt_sock, (char*) &print_pack, sizeof(PRT_PACKET), 0);
-			if (r == -1)
+			sresult = send(clnt_sock, (char*) &print_pack, sizeof(PRT_PACKET), 0);
+			if (sresult == -1)	//send 에러 처리
 				return -1;
-//			else
-//				cout << "send: " << r << endl;
 		}
 	}
 	return 0;

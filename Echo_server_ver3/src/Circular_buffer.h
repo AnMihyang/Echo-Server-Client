@@ -10,14 +10,10 @@
 
 #include "Packet_define.h"
 
-#define QUEUE_SIZE 5200
-#define HEAD_SIZE sizeof(HEADER)
-#define TAIL_SIZE sizeof(TAIL)
-#define NEXT(index) (index%QUEUE_SIZE)
-//#define NEXT(index, len) ((index+len)%QUEUE_SIZE)	//다음 인덱스를 가리키는 매크로 함수
+#define QUEUE_SIZE 10400
+#define NEXT(index) (index%QUEUE_SIZE)			//다음 인덱스를 가리키는 매크로 함수
 
 typedef struct Queue_Info {
-//	PACKET *pack[QUEUE_SIZE];
 	char data[QUEUE_SIZE];
 	int front;			// 데이터를 꺼낼 위치를 가리키는 인덱스
 	int rear;			// 데이터를 저장할 위치를 가리키는 인덱스
@@ -30,7 +26,7 @@ public:
 	int Isempty_queue(Queue *queue);
 	bool Isfull_queue(Queue *queue, int recv_size);
 	int Enqueue(Queue *queue, PACKET recvPack);
-	int Dequeue(Queue *queue);
+	int Dequeue(Queue *queue, int deq_point);
 };
 
 #endif /* CIRCULAR_BUFFER_H_ */

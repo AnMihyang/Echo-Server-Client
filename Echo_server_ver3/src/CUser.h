@@ -32,7 +32,9 @@ public:
 public:
 	CUser();
 	virtual ~CUser();
-	int Recv_data(int fd, int cUser_num, list<string> *data_list);
+	void Init();
+	void User_set(int clnt_fd);
+	int Recv_data(list<string> *data_list);
 	int Queue_check();
 	int Parsing_data();
 	int Send_data(PACKET pack);

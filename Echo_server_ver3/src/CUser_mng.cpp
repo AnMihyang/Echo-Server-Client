@@ -37,6 +37,7 @@ void CUser_mng::Server_handling()
 
 	m_events = Epoll_create();
 
+	//User_check 스레드 생성
 	if(pthread_create(&m_User_check_tID, NULL, &CUser_mng::User_check_thread, (void *)this) != 0)
 	{
 		puts("[ERROR] pthread_create() error");
@@ -53,6 +54,7 @@ void CUser_mng::Server_handling()
 		Epoll_close();
 	}
 	pthread_detach(m_Worker_tID);
+
 
 	while (1)
 	{
@@ -78,8 +80,9 @@ void CUser_mng::Server_handling()
 					if(m_clnt_socks[j] == 0)
 					{
 						m_clnt_socks[j] = m_clnt_sock;
-						m_CUser[j].m_clnt_sock = m_clnt_sock;
-						m_CUser[j].m_clnt_connect = true;
+						m_CUser[j].User_set(m_clnt_sock);
+//						m_CUser[j].m_clnt_sock = m_clnt_sock;
+//						m_CUser[j].m_clnt_connect = true;
 						break;
 					}
 					if(j == MAX_CLIENT-1)
@@ -95,56 +98,23 @@ void CUser_mng::Server_handling()
 			}
 			else
 			{
-//				cout << "event: " << m_events[i].events << endl;
 				pthread_mutex_lock(&m_clntlock);
-//				if(m_events[i].events == EPOLLIN)
-//				{
-					for (int j = 0; j < MAX_CLIENT; j++)
-					{
-						if (m_clnt_socks[j] == m_events[i].data.fd)
-						{
-							if (m_CUser[j].Recv_data(m_events[i].data.fd, j, &m_dataList) == ERR)
-							{
-								m_CUser[j].m_clnt_connect = false;
-								m_CUser[j].m_clnt_sock = 0;
-								Close_client(&m_events[i].data.fd);
-								m_clnt_socks[j] = 0;
-							}
-							break;
-						}
-					}
-/*
-				}
-				else if(m_events[i].events == EPOLLRDHUP)
+				for (int j = 0; j < MAX_CLIENT; j++)
 				{
-					for (int j = 0; j < MAX_CLIENT; j++)
-						if (m_clnt_socks[j] == m_events[i].data.fd)
+					if (m_clnt_socks[j] == m_events[i].data.fd)
+					{
+						//CUser클래스의 Recv_data 호출
+						if (m_CUser[j].Recv_data(&m_dataList) == ERR)
 						{
-							m_CUser[j].m_clnt_connect = false;
-							m_CUser[j].m_clnt_sock = 0;
+							//클라이언트 연결 끊기
+							m_CUser[j].Init();		//CUser 초기화
 							Close_client(&m_events[i].data.fd);
 							m_clnt_socks[j] = 0;
-
-							break;
 						}
-				}*/
-				pthread_mutex_unlock(&m_clntlock);
-				/*else
-				{
-					for (int j = 0; j < MAX_CLIENT; j++)
-					{
-						pthread_mutex_lock(&m_clntCon_mutex);
-						if (m_clntSocks[j] == m_events[i].data.fd)
-						{
-							m_CUser[j].m_clntConnect = false;
-							m_CUser[j].m_clntSock = 0;
-							Close_Client(&m_events[i].data.fd);
-							m_clntSocks[j] = 0;
-						}
-						pthread_mutex_unlock(&m_clntCon_mutex);
 						break;
 					}
-				}*/
+				}
+				pthread_mutex_unlock(&m_clntlock);
 			}//else
 		}//for
 	}//while
@@ -166,7 +136,6 @@ int CUser_mng::Connect_client()
 	if(epoll_ctl(m_epfd, EPOLL_CTL_ADD, m_clnt_sock, &m_event) == ERR)
 		return ERR;
 
-	cout << endl;
 	cout << "[Connect] client: " << m_clnt_sock << endl;
 	return 0;
 }
@@ -176,13 +145,9 @@ void CUser_mng::Close_client(int *fd)
 	epoll_ctl(m_epfd, EPOLL_CTL_DEL, *fd, NULL);
 	close(*fd);
 	cout << "[Closed] client: " << *fd << endl;
-
-//	int index = 0;
-//	m_CUser[index].m_clntSock = 0;
-//	m_CUser[index].m_clntConnect = false;
 }
 
-//10분마다 현재 접속중인 유저(client) 출력
+//1분마다 현재 접속중인 user(client)목록 출력
 void * CUser_mng::User_check_thread(void * arg)
 {
 	CUser_mng *cUserMng = (CUser_mng *)arg;
@@ -191,7 +156,7 @@ void * CUser_mng::User_check_thread(void * arg)
 	while(1)
 	{
 		userCnt = 0;
-		sleep(10);
+		sleep(600);
 		cout << endl;
 		cout << "-----------User Check-----------" << endl;
 		pthread_mutex_lock(&cUserMng->m_clntlock);
@@ -205,6 +170,7 @@ void * CUser_mng::User_check_thread(void * arg)
 					//클라이언트 연결 끊기
 					cout << "[Disconnected] CUser" << i << " - Client " << cUserMng->m_CUser[i].m_clnt_sock << endl;
 					cUserMng->Close_client(&cUserMng->m_CUser[i].m_clnt_sock);
+//					m_CUser[i].init();
 					cUserMng->m_CUser[i].m_clnt_sock = 0;
 					cUserMng->m_CUser[i].m_clnt_connect = false;
 				}
@@ -218,11 +184,11 @@ void * CUser_mng::User_check_thread(void * arg)
 
 		pthread_mutex_unlock(&cUserMng->m_clntlock);
 		cout << endl;
-		cout << "--------현재 접속자 수: " << userCnt << endl << endl;
+		cout << "-------현재 접속자 수: " << userCnt << endl << endl;
 	}//while
 }
 
-//계속 돌면서 패킷 parsing/send 하기
+//스레드 돌면서 패킷 parsing/send 하기
 void * CUser_mng::Worker_thread(void *arg)
 {
 	CUser_mng *cUserMng = (CUser_mng *)arg;
@@ -236,15 +202,15 @@ void * CUser_mng::Worker_thread(void *arg)
 		for(int i = 0; i < MAX_CLIENT; ++i)
 		{
 			if(cUserMng->m_CUser[i].m_clnt_connect == true)
-			{
 				if(cUserMng->m_CUser[i].Queue_check() != ERR)		//큐에 처리할 패킷 있는지 확인
+				{
 					if(cUserMng->m_CUser[i].Parsing_data() == ERR)
 						puts("[ERROR] send() error");
-			}
+				}
 			usleep(100);
 		}
 		pthread_mutex_unlock(&cUserMng->m_clntlock);
-		usleep(200000);
+		usleep(100000);
 	}
 
 	pthread_mutex_destroy(&tmutex);
