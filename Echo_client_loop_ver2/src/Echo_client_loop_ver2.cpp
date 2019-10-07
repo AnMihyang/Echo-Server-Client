@@ -102,13 +102,11 @@ int main(int argc, char *argv[])
 
 		case CMD_USER_DELETE_RESULT:
 			cout << "\n" << pack.body.data << endl;
-			cout << "\n---Data Structure List---" << endl;
 			Print_recv_list(sock);
 			break;
 
 		case CMD_USER_PRINT_RESULT:
 			cout << "\n" << pack.body.data << endl;
-			cout << "\n---Data Structure List---" << endl;
 			Print_recv_list(sock);
 			break;
 

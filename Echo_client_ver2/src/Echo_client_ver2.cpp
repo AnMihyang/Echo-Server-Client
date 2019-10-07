@@ -192,12 +192,8 @@ void Message_input_send(int *sock, PACKET pack)
 	cin.ignore(MAX_PRINT_DATA_SIZE-1, '\n');		// \n전까지 입력받음
 	while(1)
 	{
-//		message = "";
-//		cin.clear();			//버퍼 초기화
-//		cin.ignore();
-
 		getline(cin, message);
-		cin.clear();
+		cin.clear();				//버퍼 초기화
 		cout << "length: " << message.length() << endl;
 
 		if(message.length() < MAX_PRINT_DATA_SIZE)

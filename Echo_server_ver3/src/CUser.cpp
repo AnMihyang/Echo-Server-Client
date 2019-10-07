@@ -104,16 +104,16 @@ int CUser::Parsing_data()
 			//Data 저장 처리
 			case CMD_USER_SAVE_REQ:
 				m_parsing_pack.body.cmd = CMD_USER_SAVE_RESULT;
+				cout << "data: " << m_parsing_pack.body.data << endl;
 				if(! m_Data_mng.Insert_data(m_parsing_pack, m_data_list))
 				{
 					strncpy(m_parsing_pack.body.data, "[SUCCESS] Data 저장 성공", MAX_DATA_SIZE);
-					cout <<"[SUCCESS]" << endl;
+//					cout <<"[SUCCESS]" << endl;
 				}
 				else
 				{
 					strncpy(m_parsing_pack.body.data, "[FAIL] 이미 저장된 데이터", MAX_DATA_SIZE);
-					cout << "[FAIL]" << endl;
-
+//					cout << "[FAIL]" << endl;
 				}
 
 				if(Send_data(m_parsing_pack) == ERR)
@@ -183,16 +183,15 @@ int CUser::Send_data(PACKET send_pack)
 
 int CUser::Find_packet()
 {
-	cout << "find" << endl;
 	memset(&m_parsing_pack, '\0', sizeof(m_parsing_pack));
 
 	for(int i = queue.front; queue.rear != NEXT(i); ++i)
 	{
-		cout << i << endl;
 		if(QUEUE_SIZE < i+sizeof(PACKET))
 		{
-			memcpy(&m_parsing_pack, &queue.data[i], QUEUE_SIZE - i);
-			memcpy(&m_parsing_pack, &queue.data[0], sizeof(PACKET) - (QUEUE_SIZE - i));
+//			memcpy(&m_parsing_pack, &queue.data[i], QUEUE_SIZE - i);
+//			memcpy(&m_parsing_pack, &queue.data[0], sizeof(PACKET) - (QUEUE_SIZE - i));
+			memcpy(&m_parsing_pack, &queue.data[0], sizeof(PACKET));
 
 		}
 		else
@@ -201,7 +200,6 @@ int CUser::Find_packet()
 		if(!strcmp(m_parsing_pack.phead.head, "AA11") && !strcmp(m_parsing_pack.ptail.tail, "11AA"))
 		{
 			m_Circular_buffer.Dequeue(&queue);
-			cout << "find2" << endl;
 			return 0;
 		}
 	}

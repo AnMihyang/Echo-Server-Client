@@ -218,7 +218,7 @@ void * CUser_mng::User_check_thread(void * arg)
 
 		pthread_mutex_unlock(&cUserMng->m_clntlock);
 		cout << endl;
-		cout << "-----현재 접속자 수: " << userCnt << endl << endl;
+		cout << "--------현재 접속자 수: " << userCnt << endl << endl;
 	}//while
 }
 

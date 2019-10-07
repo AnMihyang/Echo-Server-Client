@@ -10,7 +10,7 @@
 
 #include "Packet_define.h"
 
-#define QUEUE_SIZE 10000
+#define QUEUE_SIZE 5200
 #define HEAD_SIZE sizeof(HEADER)
 #define TAIL_SIZE sizeof(TAIL)
 #define NEXT(index) (index%QUEUE_SIZE)

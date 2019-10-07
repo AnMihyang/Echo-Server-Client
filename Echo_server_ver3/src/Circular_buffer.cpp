@@ -37,11 +37,16 @@ int Circular_buffer::Enqueue(Queue *queue, PACKET recv_pack)
 	}
 	if(QUEUE_SIZE < queue->rear + sizeof(PACKET))
 	{
-		memcpy(&queue->data[queue->rear], &recv_pack, QUEUE_SIZE-queue->rear);
-		memcpy(&queue->data[0], &recv_pack+(QUEUE_SIZE-queue->rear), sizeof(PACKET)-(QUEUE_SIZE-queue->rear));
+		memcpy(&queue->data[0], &recv_pack, sizeof(PACKET));
+//		memcpy(&queue->data[queue->rear], &recv_pack, QUEUE_SIZE-queue->rear);
+//		memcpy(&queue->data[0], &recv_pack+(QUEUE_SIZE-queue->rear), sizeof(PACKET)-(QUEUE_SIZE-queue->rear));
+		queue->rear = NEXT(sizeof(PACKET));
 	}
 	else
+	{
 		memcpy(&queue->data[queue->rear], &recv_pack, sizeof(PACKET));
+		queue->rear = NEXT((queue->rear+sizeof(PACKET)));
+	}
 
 	/*memcpy(&queue->data[queue->rear], &recv_pack.head, HEAD_SIZE);
 	memcpy(&queue->data[queue->rear+HEAD_SIZE], &recv_pack.body, body_size);
@@ -50,7 +55,7 @@ int Circular_buffer::Enqueue(Queue *queue, PACKET recv_pack)
 //	memcpy(&queue->data[queue->rear], &recv_pack, sizeof(recv_pack));
 
 //	queue->rear = NEXT(queue->rear+nrear);
-	queue->rear = NEXT((queue->rear+sizeof(PACKET)));
+//	queue->rear = NEXT((queue->rear+sizeof(PACKET)));
 	cout << "front: " << queue->front << ", rear: " << queue->rear << endl;
 	return 0;
 }
@@ -62,10 +67,13 @@ int Circular_buffer::Dequeue(Queue *queue)
 	if(Isempty_queue(queue))
 		puts("[ERROR] Empty Queue");
 
+	if(QUEUE_SIZE <= queue->front+sizeof(PACKET))
+		queue->front = 0;
+
+	else
+		queue->front = NEXT(queue->front+sizeof(PACKET));
+
 //	queue->pack[queue->front] = (PACKET *)malloc(sizeof(PACKET));
-
-	queue->front = NEXT(queue->front+sizeof(PACKET));
-
 //	if(!IsEmpty_Queue(queue))
 //		PrintQueueData();
 
