@@ -46,6 +46,8 @@ int main(int argc, char *argv[])
 	serv_adr.sin_addr.s_addr = inet_addr("192.168.8.37");
 	serv_adr.sin_port = htons(9190);
 
+	cout << "Requesting connection to server..." << endl;
+
 	//server에 연결 요청 후 에러 처리
 	if(connect(sock, (struct sockaddr*)&serv_adr, sizeof(serv_adr)) == -1)
 		Error_handling(&sock, "connect() error!");
@@ -55,7 +57,6 @@ int main(int argc, char *argv[])
 		pack.body.cmd = CMD_USER_LOGIN_REQ;
 	}
 	cout << "Enter ID: ";
-//	fgets(message, MAX_DATA_SIZE, stdin);
 
 	strncpy(pack.body.data, "login", sizeof(pack.body.data));
 	pack.phead.datasize = strlen(pack.body.data);
@@ -107,9 +108,7 @@ int main(int argc, char *argv[])
 			close(sock);
 			return 0;
 		}
-
-		usleep(500000);
-
+		usleep(200000);
 		Output_menu();
 
 		menu = rand()%4+1;
@@ -191,6 +190,7 @@ void Message_input_send(int *sock, PACKET pack)
 	pack.phead.datasize = strlen(pack.body.data);
 	// server로 패킷 보내기
 	send(*sock, (char*)&pack, sizeof(PACKET),0);
+	usleep(300000);
 //	cout << "send : " << pack.body.cmd << ", " << pack.body.data << endl;
 }
 
@@ -217,7 +217,6 @@ void Print_recv_list(int sock)
 			strcpy(temp, &recv_pack.data[index]);
 			cout << num << ") " << temp << endl;
 			index += strlen(temp) + 1;
-//			cout << "index: " << index << endl;
 		}
 	} while (recv_pack.cmd != CMD_USER_ERR);
 	cout << "-----------------------------------------" << endl;

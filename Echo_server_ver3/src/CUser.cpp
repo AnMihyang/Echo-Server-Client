@@ -75,8 +75,9 @@ int CUser::Queue_check()
 // Packet Parsing
 int CUser::Parsing_data()
 {
-	if(Find_packet())		//Find_packet() 에러 처리
+	if(Find_packet())
 	{
+		//Find_packet() 에러 처리
 		cout << "rear: " << queue.rear << ", front: " << queue.front << endl;
 		puts("[ERROR] packet not find");
 		return ERR;
@@ -84,78 +85,80 @@ int CUser::Parsing_data()
 
 	switch (m_parsing_pack.body.cmd)
 	{
-		//Login 처리
-		case CMD_USER_LOGIN_REQ:
-			//Client에 패킷 전송
-			m_parsing_pack.body.cmd = CMD_USER_LOGIN_RESULT;
-			return Send_data(m_parsing_pack);
+	case CMD_USER_LOGIN_REQ:		//Login 처리
+		//Client에 패킷 전송
+		m_parsing_pack.body.cmd = CMD_USER_LOGIN_RESULT;
+		return Send_data(m_parsing_pack);
 
-		//Echo Data 처리
-		case CMD_USER_DATA_REQ:
-			m_parsing_pack.body.cmd = CMD_USER_DATA_RESULT;
-			return Send_data(m_parsing_pack);
 
-		//Data 저장 처리
-		case CMD_USER_SAVE_REQ:
-			m_parsing_pack.body.cmd = CMD_USER_SAVE_RESULT;
-			if (!m_Data_mng.Insert_data(m_parsing_pack, m_data_list))
-			{
-				cout << "[Client " << m_clnt_sock << "] save: " << m_parsing_pack.body.data << endl;
-				strncpy(m_parsing_pack.body.data, "[SUCCESS] Data 저장 성공", MAX_DATA_SIZE);
-			}
-			else
-				strncpy(m_parsing_pack.body.data, "[FAIL] 이미 저장된 데이터", MAX_DATA_SIZE);
-			if (Send_data(m_parsing_pack) == ERR)
+	case CMD_USER_DATA_REQ:		//Echo Data 처리
+		m_parsing_pack.body.cmd = CMD_USER_DATA_RESULT;
+		return Send_data(m_parsing_pack);
+
+
+	case CMD_USER_SAVE_REQ:		//Data 저장 처리
+		m_parsing_pack.body.cmd = CMD_USER_SAVE_RESULT;
+		if (!m_Data_mng.Insert_data(m_parsing_pack, m_data_list))
+		{
+			cout << "[Client " << m_clnt_sock << "] save: "
+					<< m_parsing_pack.body.data << endl;
+			strncpy(m_parsing_pack.body.data, "[SUCCESS] Data 저장 성공",
+					MAX_DATA_SIZE);
+		}
+		else
+			strncpy(m_parsing_pack.body.data, "[FAIL] 이미 저장된 데이터",
+					MAX_DATA_SIZE);
+		if (Send_data(m_parsing_pack) == ERR)
+			return ERR;
+		else
+		{   //client에 list data 전달
+			if (m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
 				return ERR;
-			else
-			{   //client에 list data 전달
-				if (m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
-					return ERR;
-				return 0;
-			}
+			return 0;
+		}
 
-		//Data 삭제 처리
-		case CMD_USER_DELETE_REQ:
-			m_parsing_pack.body.cmd = CMD_USER_DELETE_RESULT;
-			if (!m_Data_mng.Delete_data(m_parsing_pack, m_data_list))
+
+	case CMD_USER_DELETE_REQ:		//Data 삭제 처리
+		m_parsing_pack.body.cmd = CMD_USER_DELETE_RESULT;
+		if (!m_Data_mng.Delete_data(m_parsing_pack, m_data_list))
+		{
+			cout << "[Client " << m_clnt_sock << "] delete: "
+					<< m_parsing_pack.body.data << endl;
+			strncpy(m_parsing_pack.body.data, "[SUCCESS] Data 삭제 성공",
+					MAX_DATA_SIZE);
+		}
+		else
+			strncpy(m_parsing_pack.body.data, "[FAIL] list에 해당 데이터 없음",
+					MAX_DATA_SIZE);
+
+		if (Send_data(m_parsing_pack) == ERR) return ERR;
+		else 	//client에 list data 전달
+			if (m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
 			{
-				cout << "[Client " << m_clnt_sock << "] delete: " << m_parsing_pack.body.data << endl;
-				strncpy(m_parsing_pack.body.data, "[SUCCESS] Data 삭제 성공", MAX_DATA_SIZE);
-			}
-			else
-				strncpy(m_parsing_pack.body.data, "[FAIL] list에 해당 데이터 없음", MAX_DATA_SIZE);
-
-			if (Send_data(m_parsing_pack) == ERR)
+				puts("[ERROR] list_send() error");
 				return ERR;
-			else
-			{
-				//client에 list data 전달
-				if (m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
-					return ERR;
-				return 0;
 			}
+		return 0;
 
-		//Data list 출력
-		case CMD_USER_PRINT_REQ:
-			m_parsing_pack.body.cmd = CMD_USER_PRINT_RESULT;
-			strcpy(m_parsing_pack.body.data, "CMD_USER_PRINT_RESULT");
-			if (Send_data(m_parsing_pack) == ERR)
+
+	case CMD_USER_PRINT_REQ:			//Data list 출력
+		m_parsing_pack.body.cmd = CMD_USER_PRINT_RESULT;
+		strcpy(m_parsing_pack.body.data, "CMD_USER_PRINT_RESULT");
+		if (Send_data(m_parsing_pack) == ERR) return ERR;
+		else
+			if (m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+			{
+				puts("[ERROR] list send() error");
 				return ERR;
-			else
-			{
-				if (m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
-				{
-					puts("[ERROR] list send() error");
-					return ERR;
-				}
-				return 0;
 			}
+		return 0;
 
-		default:
-			m_parsing_pack.body.cmd = CMD_USER_ERR;
-			strcpy(m_parsing_pack.body.data, "Request error");
-			puts("[ERROR] request error");
-			return Send_data(m_parsing_pack);
+
+	default:
+		m_parsing_pack.body.cmd = CMD_USER_ERR;
+		strcpy(m_parsing_pack.body.data, "Request error");
+		puts("[ERROR] request error");
+		return Send_data(m_parsing_pack);
 	} //switch
 
 	return 0;

@@ -71,18 +71,21 @@ void CUser_mng::Server_handling()
 
 			if (m_events[i].data.fd == m_serv_sock)
 			{
-				pthread_mutex_lock(&m_clntlock);
 				Connect_client();		//클라이언트 연결
+
 
 				for(int j = 0; j < MAX_CLIENT; j++)
 				{
+
 					//clntSocks배열에 client socket 부여하기
 					if(m_clnt_socks[j] == 0)
 					{
+						pthread_mutex_lock(&m_clntlock);
 						m_clnt_socks[j] = m_clnt_sock;
 						m_CUser[j].User_set(m_clnt_sock);
 //						m_CUser[j].m_clnt_sock = m_clnt_sock;
 //						m_CUser[j].m_clnt_connect = true;
+						pthread_mutex_unlock(&m_clntlock);
 						break;
 					}
 					if(j == MAX_CLIENT-1)
@@ -93,12 +96,13 @@ void CUser_mng::Server_handling()
 						puts("[ERROR] 접속자 수 초과");
 						Close_client(&m_clnt_sock);
 					}
+
 				}
-				pthread_mutex_unlock(&m_clntlock);
+
 			}
 			else
 			{
-				pthread_mutex_lock(&m_clntlock);
+//				pthread_mutex_lock(&m_clntlock);
 				for (int j = 0; j < MAX_CLIENT; j++)
 				{
 					if (m_clnt_socks[j] == m_events[i].data.fd)
@@ -106,18 +110,21 @@ void CUser_mng::Server_handling()
 						//CUser클래스의 Recv_data 호출
 						if (m_CUser[j].Recv_data(&m_dataList) == ERR)
 						{
+//							pthread_mutex_lock(&m_clntlock);
 							//클라이언트 연결 끊기
 							m_CUser[j].Init();		//CUser 초기화
 							Close_client(&m_events[i].data.fd);
 							m_clnt_socks[j] = 0;
+//							pthread_mutex_unlock(&m_clntlock);
 						}
 						break;
 					}
 				}
-				pthread_mutex_unlock(&m_clntlock);
+//				pthread_mutex_unlock(&m_clntlock);
 			}//else
 		}//for
 	}//while
+	cout << "[NOTICE] close" << endl;
 	close(m_serv_sock);
 	Epoll_close();
 }
@@ -156,10 +163,10 @@ void * CUser_mng::User_check_thread(void * arg)
 	while(1)
 	{
 		userCnt = 0;
-		sleep(600);
+		sleep(60);
 		cout << endl;
 		cout << "-----------User Check-----------" << endl;
-		pthread_mutex_lock(&cUserMng->m_clntlock);
+//		pthread_mutex_lock(&cUserMng->m_clntlock);
 
 		for(int i = 0; i < MAX_CLIENT; ++i)
 		{
@@ -182,7 +189,7 @@ void * CUser_mng::User_check_thread(void * arg)
 			}
 		}//for
 
-		pthread_mutex_unlock(&cUserMng->m_clntlock);
+//		pthread_mutex_unlock(&cUserMng->m_clntlock);
 		cout << endl;
 		cout << "-------현재 접속자 수: " << userCnt << endl << endl;
 	}//while
@@ -192,9 +199,6 @@ void * CUser_mng::User_check_thread(void * arg)
 void * CUser_mng::Worker_thread(void *arg)
 {
 	CUser_mng *cUserMng = (CUser_mng *)arg;
-	pthread_mutex_t tmutex;
-
-	pthread_mutex_init(&tmutex, NULL);
 
 	while(1)
 	{
@@ -213,5 +217,4 @@ void * CUser_mng::Worker_thread(void *arg)
 		usleep(100000);
 	}
 
-	pthread_mutex_destroy(&tmutex);
 }

@@ -47,8 +47,6 @@ typedef struct MILESTONE_PACKET
 {
 	HEADER phead;
 	BODY body;
-//	unsigned short cmd;
-//	char data[MAX_DATA_SIZE];
 	TAIL ptail;
 }PACKET;
 

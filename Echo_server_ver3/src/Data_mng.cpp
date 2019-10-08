@@ -75,7 +75,7 @@ int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 	if (data_list->empty())
 	{
 		print_pack.cmd = CMD_USER_ERR;
-		strncpy(print_pack.data, "            !!Empty!!\0", sizeof(print_pack.data));
+		strncpy(print_pack.data, "             !!Empty!!\0", sizeof(print_pack.data));
 		print_pack.data_num = 0;
 		if (send(clnt_sock, (char*) &print_pack, sizeof(PRT_PACKET), 0) == -1)
 			return -1;

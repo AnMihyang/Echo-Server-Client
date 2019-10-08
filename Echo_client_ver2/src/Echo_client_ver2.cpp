@@ -34,13 +34,6 @@ int main(int argc, char *argv[])
 	string menu;
 	PACKET pack;
 
-	/*
-	//IP주소와 PORT번호 입력이 안될 경우 출력, 종료 처리
-	if(argc!=3){
-		printf("Usage : %s <IP> <port>\n", argv[0]);
-		exit(1);
-	}*/
-
 	//소켓 생성
 	sock=socket(PF_INET, SOCK_STREAM, 0);
 
@@ -53,6 +46,8 @@ int main(int argc, char *argv[])
 	serv_adr.sin_family=AF_INET;
 	serv_adr.sin_addr.s_addr = inet_addr("192.168.8.37");
 	serv_adr.sin_port = htons(9190);
+
+	cout << "Requesting connection to server..." << endl;
 
 	//server에 연결 요청 후 에러 처리
 	if(connect(sock, (struct sockaddr*)&serv_adr, sizeof(serv_adr)) == -1)
@@ -99,7 +94,6 @@ int main(int argc, char *argv[])
 			break;
 
 		case CMD_USER_PRINT_RESULT:
-//			cout << "\n" << pack.body.data << endl;
 			Print_recv_list(sock);
 			break;
 
@@ -135,7 +129,6 @@ int main(int argc, char *argv[])
 		switch(atoi(menu.c_str()))
 		{
 			case 1:	//Echo Data
-//				fputs("\nInput message: ", stdout);
 				cout << "\nInput message." << endl;
 				cout << ">> ";
 				pack.body.cmd = CMD_USER_DATA_REQ;
@@ -236,7 +229,6 @@ void Print_recv_list(int sock)
 			strcpy(temp, &recv_pack.data[index]);
 			cout << num << ") " << temp << endl;
 			index += strlen(temp) + 1;
-//			cout << "index: " << index << endl;
 		}
 	} while (recv_pack.cmd != CMD_USER_ERR);
 	cout << "-------------------------------" << endl;

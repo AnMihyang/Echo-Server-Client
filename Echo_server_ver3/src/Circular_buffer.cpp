@@ -36,7 +36,6 @@ int Circular_buffer::Enqueue(Queue *queue, PACKET recv_pack)
 		queue->rear = NEXT((queue->rear+sizeof(PACKET)));
 	}
 
-//	cout << "front: " << queue->front << ", rear: " << queue->rear << endl;
 	return 0;
 }
 
@@ -52,7 +51,6 @@ int Circular_buffer::Dequeue(Queue *queue, int deq_point)
 	else
 		queue->front = NEXT((deq_point+sizeof(PACKET)));
 
-//	cout << "[Dequeue] front: " << queue->front << ", rear: " << queue->rear << endl;
 	return 0;
 }
 
