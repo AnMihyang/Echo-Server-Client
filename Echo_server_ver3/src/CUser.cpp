@@ -100,42 +100,37 @@ int CUser::Parsing_data()
 		m_parsing_pack.body.cmd = CMD_USER_SAVE_RESULT;
 		if (!m_Data_mng.Insert_data(m_parsing_pack, m_data_list))
 		{
-			cout << "[Client " << m_clnt_sock << "] save: "
-					<< m_parsing_pack.body.data << endl;
-			strncpy(m_parsing_pack.body.data, "[SUCCESS] Data 저장 성공",
-					MAX_DATA_SIZE);
+			cout << "  [Client " << m_clnt_sock  << "] SAVE: " << m_parsing_pack.body.data << endl;
+			strncpy(m_parsing_pack.body.data, "[SUCCESS] Data 저장 성공", MAX_DATA_SIZE);
 		}
 		else
-			strncpy(m_parsing_pack.body.data, "[FAIL] 이미 저장된 데이터",
-					MAX_DATA_SIZE);
-		if (Send_data(m_parsing_pack) == ERR)
-			return ERR;
-		else
-		{   //client에 list data 전달
+			strncpy(m_parsing_pack.body.data, "[FAIL] 이미 저장된 데이터", MAX_DATA_SIZE);
+
+		if (Send_data(m_parsing_pack) == ERR) return ERR;
+		else   //client에 list data 전달
 			if (m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
+			{
+				cout << "[ERROR] client " << m_clnt_sock << ": list send() error" << endl;
 				return ERR;
-			return 0;
-		}
+			}
+		return 0;
 
 
 	case CMD_USER_DELETE_REQ:		//Data 삭제 처리
 		m_parsing_pack.body.cmd = CMD_USER_DELETE_RESULT;
 		if (!m_Data_mng.Delete_data(m_parsing_pack, m_data_list))
 		{
-			cout << "[Client " << m_clnt_sock << "] delete: "
-					<< m_parsing_pack.body.data << endl;
-			strncpy(m_parsing_pack.body.data, "[SUCCESS] Data 삭제 성공",
-					MAX_DATA_SIZE);
+			cout << "[Client " << m_clnt_sock << "] DELETE: " << m_parsing_pack.body.data << endl;
+			strncpy(m_parsing_pack.body.data, "[SUCCESS] Data 삭제 성공", MAX_DATA_SIZE);
 		}
 		else
-			strncpy(m_parsing_pack.body.data, "[FAIL] list에 해당 데이터 없음",
-					MAX_DATA_SIZE);
+			strncpy(m_parsing_pack.body.data, "[FAIL] list에 해당 데이터 없음", MAX_DATA_SIZE);
 
 		if (Send_data(m_parsing_pack) == ERR) return ERR;
 		else 	//client에 list data 전달
 			if (m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
 			{
-				puts("[ERROR] list_send() error");
+				cout << "[ERROR] client " << m_clnt_sock << ": list send() error" << endl;
 				return ERR;
 			}
 		return 0;
@@ -148,7 +143,7 @@ int CUser::Parsing_data()
 		else
 			if (m_Data_mng.Send_data_list(m_clnt_sock, m_data_list) == ERR)
 			{
-				puts("[ERROR] list send() error");
+				cout << "[ERROR] client: " << m_clnt_sock << "list send() error" << endl;
 				return ERR;
 			}
 		return 0;
@@ -167,9 +162,9 @@ int CUser::Parsing_data()
 // Client로 Packet 보내기
 int CUser::Send_data(PACKET send_pack)
 {
-//	cout << "send: " << send_pack.body.cmd << ", " << send_pack.body.data << endl;
  	if(send(m_clnt_sock, (char*) &send_pack, sizeof(PACKET), 0) == -1)
-		return ERR;
+ 		while(send(m_clnt_sock, (char*) &send_pack, sizeof(PACKET), 0) == -1)
+//		return ERR;
 	return 0;
 }
 

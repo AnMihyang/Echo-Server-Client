@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <string.h>
-
+#include <iomanip>
 
 using namespace std;
 
@@ -92,7 +92,8 @@ void CUser_mng::Server_handling()
 					{	//접속자 수 처리
 						m_pack.body.cmd = CMD_USER_ERR;
 						strcpy(m_pack.body.data, "[ERROR] 접속자 수 초과\n");
-						send(m_clnt_sock, (char*) &m_pack, sizeof(PACKET), 0);
+						if(send(m_clnt_sock, (char*) &m_pack, sizeof(PACKET), 0) == -1)
+							while(send(m_clnt_sock, (char*) &m_pack, sizeof(PACKET), 0) == -1);
 						puts("[ERROR] 접속자 수 초과");
 						Close_client(&m_clnt_sock);
 					}
@@ -124,7 +125,7 @@ void CUser_mng::Server_handling()
 			}//else
 		}//for
 	}//while
-	cout << "[NOTICE] close" << endl;
+	cout << "[NOTICE] close server" << endl;
 	close(m_serv_sock);
 	Epoll_close();
 }
@@ -163,10 +164,10 @@ void * CUser_mng::User_check_thread(void * arg)
 	while(1)
 	{
 		userCnt = 0;
-		sleep(60);
+		sleep(300);
 		cout << endl;
-		cout << "-----------User Check-----------" << endl;
-//		pthread_mutex_lock(&cUserMng->m_clntlock);
+		cout << "-----------------User Check-----------------" << endl;
+		pthread_mutex_lock(&cUserMng->m_clntlock);
 
 		for(int i = 0; i < MAX_CLIENT; ++i)
 		{
@@ -175,23 +176,23 @@ void * CUser_mng::User_check_thread(void * arg)
 				if(cUserMng->m_CUser[i].m_clnt_sock == 0)
 				{
 					//클라이언트 연결 끊기
-					cout << "[Disconnected] CUser" << i << " - Client " << cUserMng->m_CUser[i].m_clnt_sock << endl;
+					cout << "   [Disconnected] CUser " << i << " - Client " << cUserMng->m_CUser[i].m_clnt_sock << endl;
 					cUserMng->Close_client(&cUserMng->m_CUser[i].m_clnt_sock);
-//					m_CUser[i].init();
-					cUserMng->m_CUser[i].m_clnt_sock = 0;
-					cUserMng->m_CUser[i].m_clnt_connect = false;
+					cUserMng->m_CUser[i].Init();
+//					cUserMng->m_CUser[i].m_clnt_sock = 0;
+//					cUserMng->m_CUser[i].m_clnt_connect = false;
 				}
 				else
 				{
-					cout << " [Connected] CUser" << i << " - Client " << cUserMng->m_CUser[i].m_clnt_sock << endl;
+					cout << "   [Connected] CUser " << i << " - Client " << cUserMng->m_CUser[i].m_clnt_sock << endl;
 					++userCnt;
 				}
 			}
 		}//for
 
-//		pthread_mutex_unlock(&cUserMng->m_clntlock);
+		pthread_mutex_unlock(&cUserMng->m_clntlock);
 		cout << endl;
-		cout << "-------현재 접속자 수: " << userCnt << endl << endl;
+		cout << "----------- 현재 접속자 수 : " << setw(3)  << userCnt <<" -----------"<< endl << endl;
 	}//while
 }
 
@@ -202,18 +203,19 @@ void * CUser_mng::Worker_thread(void *arg)
 
 	while(1)
 	{
-		pthread_mutex_lock(&cUserMng->m_clntlock);
 		for(int i = 0; i < MAX_CLIENT; ++i)
 		{
+			pthread_mutex_lock(&cUserMng->m_clntlock);
 			if(cUserMng->m_CUser[i].m_clnt_connect == true)
 				if(cUserMng->m_CUser[i].Queue_check() != ERR)		//큐에 처리할 패킷 있는지 확인
 				{
 					if(cUserMng->m_CUser[i].Parsing_data() == ERR)
-						puts("[ERROR] send() error");
+						cout << "[ERROR] client " << cUserMng->m_CUser[i].m_clnt_sock << ": send() error" << endl;
 				}
 			usleep(100);
+			pthread_mutex_unlock(&cUserMng->m_clntlock);
 		}
-		pthread_mutex_unlock(&cUserMng->m_clntlock);
+
 		usleep(100000);
 	}
 

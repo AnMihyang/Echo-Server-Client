@@ -22,7 +22,7 @@
 #define CMD_USER_ERR 0x0B
 
 #define MAX_DATA_SIZE 1023
-#define MAX_PRINT_DATA_SIZE 5000
+#define MAX_PRINT_DATA_SIZE 3000
 
 #pragma pack(push, 1)	//1byte 정렬
 
@@ -52,6 +52,7 @@ typedef struct MILESTONE_PACKET
 
 typedef struct PRINT_PACKET
 {
+	char head[5] = {"AA11"};
 	unsigned short cmd;
 	unsigned int data_num;
 	char data[MAX_PRINT_DATA_SIZE];

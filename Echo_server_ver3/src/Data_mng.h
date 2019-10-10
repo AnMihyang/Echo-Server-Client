@@ -24,6 +24,7 @@ public:
 	int Delete_data(PACKET del_pack, list<string> *data_list);		//Client로부터 받은 데이터 list에서 삭제
 	void Print_data_list(list<string> *data_list);					//server에 list 데이터 출력
 	int Send_data_list(int clnt_sock, list<string> *data_list);					//client에 list 데이터 전달
+	int Send_packet(int clnt_sock, char *buf, int len);
 };
 
 #endif /* DATA_MNG_H_ */

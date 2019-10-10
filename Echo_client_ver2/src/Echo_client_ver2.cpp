@@ -189,7 +189,6 @@ void Message_input_send(int *sock, PACKET pack)
 	{
 		getline(cin, message);
 		cin.clear();				//버퍼 초기화
-//		cout << "length: " << message.length() << endl;
 
 		if(message.length() < MAX_DATA_SIZE)
 			break;
@@ -203,7 +202,6 @@ void Message_input_send(int *sock, PACKET pack)
 
 	// server로 패킷 보내기
 	send(*sock, (char*)&pack, sizeof(PACKET),0);
-//	cout << "send : " << pack.body.cmd << ", " << pack.body.data << endl;
 }
 
 void Print_recv_list(int sock)
@@ -215,53 +213,38 @@ void Print_recv_list(int sock)
 	memset(temp, '\0', MAX_DATA_SIZE);
 	memset(recv_pack.data, '\0', sizeof(recv_pack.data));
 
-	cout << "\n------Data Structure List------" << endl;
+	cout << "\n-----------Data Structure List-----------" << endl;
 
 	do
 	{
-		recv(sock, (char*) &recv_pack, sizeof(PRT_PACKET), MSG_WAITALL);
-
-		if(!recv_pack.data_num)
-			cout << recv_pack.data << endl;
-
-		for (unsigned int i = 0, index = 0; i < recv_pack.data_num; i++) {
-			num++;
-			strcpy(temp, &recv_pack.data[index]);
-			cout << num << ") " << temp << endl;
-			index += strlen(temp) + 1;
-		}
-	} while (recv_pack.cmd != CMD_USER_ERR);
-	cout << "-------------------------------" << endl;
-}
-
-/*void Print_recv_list(int sock)
-{
-	PRT_PACKET recv_pack;
-	char *tok;
-	int data_cnt = 0;
-	cout << "\n---Data Structure List---" << endl;
-	do
-	{
-		recv(sock, (char*)&recv_pack, sizeof(PRT_PACKET), MSG_WAITALL);
-		tok = strtok(recv_pack.data, "#;;");
-		while(tok != NULL)
+		if(recv(sock, (char*) &recv_pack, sizeof(PRT_PACKET), MSG_WAITALL) == -1)
 		{
-			cout << ++data_cnt << ") " << tok << endl;
-			tok = strtok(NULL, "#;;");
+			cout << "[ERROR] recv() error" << endl;
+			close(sock);
+			exit(1);
+			//			while(recv(sock, (char*) &recv_pack, sizeof(PRT_PACKET), MSG_WAITALL) == -1);
+			//			cout << "[SUCCESS] recv() 성공" << endl;
 		}
-	} while(recv_pack.cmd != CMD_USER_ERR);
-}*/
 
-/*void Print_recv_list(int sock, PACKET pack)
-{
-	int cnt = 0;
-	while (pack.body.cmd != CMD_USER_ERR)
-	{
-		recv(sock, (char*) &pack, sizeof(PACKET), 0);
-		cout << ' ' << ++cnt << ") " << pack.body.data << endl;
-	}
-	cout << "-------------------------" << endl;
-}*/
+
+		if(!strcmp(recv_pack.head, "AA11"))
+		{
+			if(!recv_pack.data_num)
+				cout << recv_pack.data << endl;
+
+			for (unsigned int i = 0, index = 0; i < recv_pack.data_num; i++)
+			{
+				num++;
+				strcpy(temp, &recv_pack.data[index]);
+				cout << num << ") " << temp << endl;
+				index += strlen(temp) + 1;
+			}
+		}
+		else
+			puts("[ERROR] receive packet error");
+	} while (recv_pack.cmd != CMD_USER_ERR);
+	cout << "-----------------------------------------" << endl;
+}
 
 void Error_handling(int *sock, char *message)
 {

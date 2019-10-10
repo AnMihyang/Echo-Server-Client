@@ -31,7 +31,7 @@ int Data_mng::Insert_data(PACKET in_pack, list<string> *data_list) {
 		return -1;
 
 	data_list->push_back(in_pack.body.data);	//list에 입력받은 데이터 삽입
-	Print_data_list(data_list);
+//	Print_data_list(data_list);
 	return 0;
 }
 
@@ -44,7 +44,7 @@ int Data_mng::Delete_data(PACKET del_pack, list<string> *data_list) {
 		return -1;
 
 	data_list->remove(del_pack.body.data);		//list에서 입력받은 데이터 삭제
-	Print_data_list(data_list);
+//	Print_data_list(data_list);
 	return 0;
 }
 
@@ -62,14 +62,16 @@ void Data_mng::Print_data_list(list<string> *data_list)
 
 int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 {
-	int sresult;
 	PRT_PACKET print_pack;
 	unsigned int data_cnt = 1;
 	unsigned int pindex = 0;
 	string send_msg;
 	int cnt = 0;
+
+
+
 	print_pack.cmd = CMD_USER_PRINT_RESULT;
-	memset(&print_pack.data, '\0', sizeof(print_pack.data));
+	memset(&print_pack.data, 0x00, sizeof(print_pack.data));
 
 	//list 비어있을 경우
 	if (data_list->empty())
@@ -77,8 +79,8 @@ int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 		print_pack.cmd = CMD_USER_ERR;
 		strncpy(print_pack.data, "             !!Empty!!\0", sizeof(print_pack.data));
 		print_pack.data_num = 0;
-		if (send(clnt_sock, (char*) &print_pack, sizeof(PRT_PACKET), 0) == -1)
-			return -1;
+
+		Send_packet(clnt_sock, (char *)&print_pack, sizeof(PRT_PACKET));
 	}
 
 	for (list<string>::iterator it = data_list->begin(); it != data_list->end(); ++data_cnt, ++it)
@@ -88,10 +90,22 @@ int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 		if(sizeof(print_pack.data) < pindex+send_msg.length())
 		{
 			print_pack.data_num = cnt;
-			if(send(clnt_sock, (char*) &print_pack, sizeof(PRT_PACKET), 0) == -1)
+			Send_packet(clnt_sock, (char *)&print_pack, sizeof(PRT_PACKET));
+		/*	if (send(clnt_sock, (char*) &print_pack, sizeof(PRT_PACKET), 0) == -1)
+			{
+				cout << "[ERROR] client " << clnt_sock << ": send() error" << endl;
+				while(send(clnt_sock, (char*) &print_pack, sizeof(PRT_PACKET), 0) == -1);
+				cout << "[SUCCESS] send() success" << endl;
+			}*/
+
+			/*if(send(clnt_sock, (char*) &print_pack, sizeof(PRT_PACKET), 0) == -1)
+			{
+				cout << "over err" << endl;
+				cout << "[index] pindex: " << pindex << ", datasize: " << send_msg.length() << endl;
 				return -1;
+			}*/
 			pindex = 0;
-			memset(&print_pack.data, '\0', sizeof(print_pack.data));
+			memset(&print_pack.data, 0x00, sizeof(print_pack.data));
 			cnt = 0;
 		}
 		cnt++;
@@ -104,10 +118,31 @@ int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 		if(print_pack.cmd == CMD_USER_ERR)
 		{
 			print_pack.data_num = cnt;
-			sresult = send(clnt_sock, (char*) &print_pack, sizeof(PRT_PACKET), 0);
-			if (sresult == -1)	//send 에러 처리
-				return -1;
+			Send_packet(clnt_sock, (char *)&print_pack, sizeof(PRT_PACKET));
 		}
 	}
 	return 0;
+}
+
+int Data_mng::Send_packet(int sock, char *buf, int len)
+{
+	int sresult = 0;
+	char *ptr = buf;
+	int sleft = len;
+
+	while (sleft > 0)
+	{
+		sresult = send(sock, ptr, sleft, 0);
+
+		if (sresult == -1)
+			continue;
+		else if (sresult == 0)
+			break;
+		else if(sresult != sizeof(PRT_PACKET))
+			cout << "[RESULT] " << sresult << endl;
+
+		sleft -= sresult;
+		ptr += sresult;
+	}
+	return (len-sleft);
 }
