@@ -14,7 +14,7 @@
 #include "CEpoll_mng.h"
 #include "Packet_define.h"
 
-#define MAX_CLIENT 500
+#define MAX_CLIENT 700
 
 class CUser_mng: public CEpoll_mng {
 private:

@@ -12,8 +12,6 @@
 #include "Data_mng.h"
 #include "Packet_define.h"
 
-#define RECV_BUFF 2048
-
 using namespace std;
 
 class CUser {
@@ -34,12 +32,12 @@ public:
 	virtual ~CUser();
 	void Init();
 	void User_set(int clnt_fd);
+	int Recvn(int s, char *buf, int len, int flags);
 	int Recv_data(list<string> *data_list);
 	int Queue_check();
 	int Parsing_data();
 	int Send_data(PACKET pack);
 	int Find_packet();
-	int Recvn(int len);
 };
 
 #endif /* CUSER_H_ */

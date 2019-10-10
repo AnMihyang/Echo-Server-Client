@@ -18,7 +18,7 @@ CEpoll_mng::CEpoll_mng() {
 }
 
 CEpoll_mng::~CEpoll_mng() {
-	free(m_events);
+	free(m_events);		//메모리 해제
 }
 
 //소켓 설정
@@ -30,6 +30,10 @@ void CEpoll_mng::Set_socket()
 	m_serv_adr.sin_addr.s_addr = htonl(INADDR_ANY);	// INADDR_ANY:사용 가능한 랜카드 IP 사용
 	m_serv_adr.sin_port = htons(PORT);					// 포트 할당
 
+	setsockopt(m_serv_sock, SOL_SOCKET, SO_REUSEADDR, &m_reuseopt_adr, sizeof(m_reuseopt_adr));
+//	setsockopt(m_serv_sock, SOL_SOCKET, SO_RCVBUF, (char*)&m_recvopt_adr, RECV_BUF_SIZE);
+//	setsockopt(m_serv_sock, SOL_SOCKET, SO_SNDBUF, (char*)&m_sendopt_adr, SEND_BUF_SIZE);
+
 	//주소 할당
 	if (bind(m_serv_sock, (struct sockaddr*) &m_serv_adr, sizeof(m_serv_adr)) == ERR)
 		puts("[ERRPR] bind Error");
@@ -37,6 +41,8 @@ void CEpoll_mng::Set_socket()
 	//연결 가능 상태 만들기
 	if (listen(m_serv_sock, 5) == ERR)
 		puts("[ERROR] listen Error");
+
+
 }
 
 struct epoll_event *CEpoll_mng::Epoll_create()

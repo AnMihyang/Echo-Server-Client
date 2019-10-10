@@ -18,10 +18,13 @@
 
 #include "Packet_define.h"
 
-void Output_menu();											//Menu 출력
-void Message_input_send(int *sock, PACKET pack);			//입력받은 데이터 Server로 Send
-void Print_recv_list(int sock);				//Server에서 List에 있는 데이터 받아서 출력
-void Error_handling(int *sock, char *message);						//error 처리
+#define SEND_BUF_SIZE 1024000
+#define RECV_BUF_SIZE 1024000
+
+void Output_menu();										//Menu 출력
+void Message_input_send(int *sock, PACKET pack);		//입력받은 데이터 Server로 Send
+void Print_recv_list(int sock);					//Server에서 List에 있는 데이터 받아서 출력
+void Error_handling(int *sock, char *message);		//error 처리
 
 using namespace std;
 
@@ -32,6 +35,8 @@ int main(int argc, char *argv[])
 	struct sockaddr_in serv_adr;
 	int menu;
 	PACKET pack;
+	int m_recvopt_adr = 0;
+	int m_sendopt_adr = 0;
 
 	//소켓 생성
 	sock=socket(PF_INET, SOCK_STREAM, 0);
@@ -48,6 +53,8 @@ int main(int argc, char *argv[])
 
 	cout << "Requesting connection to server..." << endl;
 
+//	setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char*)&m_recvopt_adr, RECV_BUF_SIZE);
+//	setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char*)&m_sendopt_adr, SEND_BUF_SIZE);
 	//server에 연결 요청 후 에러 처리
 	if(connect(sock, (struct sockaddr*)&serv_adr, sizeof(serv_adr)) == -1)
 		Error_handling(&sock, "connect() error!");
@@ -99,8 +106,7 @@ int main(int argc, char *argv[])
 			break;
 
 		case CMD_USER_ERR:
-			puts("[ERROR] cmd: CMD_USER_ERR");
-			cout << pack.body.data << endl;
+			cout << "[ERROR] " << pack.body.data << endl;
 			close(sock);
 			return 0;
 
@@ -109,8 +115,7 @@ int main(int argc, char *argv[])
 			close(sock);
 			return 0;
 		}
-//		sleep(1);
-		usleep(500000);
+//		usleep(500000);
 		Output_menu();
 
 		menu = rand()%3+1;
@@ -120,22 +125,19 @@ int main(int argc, char *argv[])
 		switch(menu)
 		{
 			case 1:	//Echo Data
-				cout << "\nInput message." << endl;
-				cout << ">> ";
+				cout << "\nInput message." << endl <<  ">> ";
 				pack.body.cmd = CMD_USER_DATA_REQ;
 				Message_input_send(&sock, pack);
 				break;
 
 			case 2:	//Save Data
-				cout << "\nEnter message to save." << endl;
-				cout << ">> ";
+				cout << "\nEnter message to save." << endl << ">> ";
 				pack.body.cmd = CMD_USER_SAVE_REQ;
 				Message_input_send(&sock, pack);
 				break;
 
 			case 3:	//Delete Data
-				cout << "\nEnter message to delete." << endl;
-				cout << ">> ";
+				cout << "\nEnter message to delete." << endl << ">> ";
 				pack.body.cmd = CMD_USER_DELETE_REQ;
 				Message_input_send(&sock, pack);
 				break;
@@ -156,7 +158,6 @@ int main(int argc, char *argv[])
 				puts("\n!!try again!!");
 		}
 	}//while end
-
 	return 0;
 }
 
@@ -180,8 +181,9 @@ void Message_input_send(int *sock, PACKET pack)
 
 	while(1)
 	{
-		datalen = rand() % 99 + 1;
-		if (datalen < MAX_DATA_SIZE)
+//		datalen = rand() % MAX_DATA_SIZE + 1;
+		datalen = rand() % 100 + 1;
+		if (datalen <= MAX_DATA_SIZE)
 			break;
 	}
 
@@ -198,8 +200,8 @@ void Message_input_send(int *sock, PACKET pack)
 		close(*sock);
 		exit(1);
 	}
-	sleep(1);
-//	cout << "send : " << pack.body.cmd << ", " << pack.body.data << endl;
+	usleep(700000);
+//	sleep(1);
 }
 
 void Print_recv_list(int sock)
@@ -231,7 +233,7 @@ void Print_recv_list(int sock)
 			{
 				num++;
 				strcpy(temp, &recv_pack.data[index]);
-				cout << num << ") " << temp << endl;
+				cout << num << ") " << temp << endl << endl;
 				index += strlen(temp) + 1;
 			}
 		}

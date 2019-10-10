@@ -190,10 +190,10 @@ void Message_input_send(int *sock, PACKET pack)
 		getline(cin, message);
 		cin.clear();				//버퍼 초기화
 
-		if(message.length() < MAX_DATA_SIZE)
+		if(message.length() <= MAX_DATA_SIZE)
 			break;
 
-		cout << "Data size exceeded. Please enter again." << endl;
+		cout << "Data size exceeded. Please enter again. (MAX data size: 1023)" << endl;
 		cout << ">> ";
 	}
 

@@ -36,10 +36,10 @@ int Circular_buffer::Enqueue(Queue *queue, PACKET recv_pack)
 		queue->rear = NEXT((queue->rear+sizeof(PACKET)));
 	}
 
+//	cout << "[Enqueue] front: " << queue->front << ", rear: " << queue->rear << endl;
 	return 0;
 }
 
-//TODO:Dequeue 수정하기
 int Circular_buffer::Dequeue(Queue *queue, int deq_point)
 {
 	if(Isempty_queue(queue))

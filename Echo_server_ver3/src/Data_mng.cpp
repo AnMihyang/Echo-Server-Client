@@ -13,6 +13,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -22,7 +23,8 @@ Data_mng::Data_mng() {
 Data_mng::~Data_mng() {
 }
 
-int Data_mng::Insert_data(PACKET in_pack, list<string> *data_list) {
+int Data_mng::Insert_data(PACKET in_pack, list<string> *data_list)
+{
 	list<string>::iterator it;
 
 	it = find(data_list->begin(), data_list->end(), in_pack.body.data);
@@ -35,7 +37,8 @@ int Data_mng::Insert_data(PACKET in_pack, list<string> *data_list) {
 	return 0;
 }
 
-int Data_mng::Delete_data(PACKET del_pack, list<string> *data_list) {
+int Data_mng::Delete_data(PACKET del_pack, list<string> *data_list)
+{
 	list<string>::iterator it;
 
 	it = find(data_list->begin(), data_list->end(), del_pack.body.data);
@@ -68,8 +71,6 @@ int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 	string send_msg;
 	int cnt = 0;
 
-
-
 	print_pack.cmd = CMD_USER_PRINT_RESULT;
 	memset(&print_pack.data, 0x00, sizeof(print_pack.data));
 
@@ -80,7 +81,8 @@ int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 		strncpy(print_pack.data, "             !!Empty!!\0", sizeof(print_pack.data));
 		print_pack.data_num = 0;
 
-		Send_packet(clnt_sock, (char *)&print_pack, sizeof(PRT_PACKET));
+		if(Send_packet(clnt_sock, (char *)&print_pack, sizeof(PRT_PACKET)) != sizeof(PRT_PACKET))
+			return -1;
 	}
 
 	for (list<string>::iterator it = data_list->begin(); it != data_list->end(); ++data_cnt, ++it)
@@ -90,7 +92,8 @@ int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 		if(sizeof(print_pack.data) < pindex+send_msg.length())
 		{
 			print_pack.data_num = cnt;
-			Send_packet(clnt_sock, (char *)&print_pack, sizeof(PRT_PACKET));
+			if(Send_packet(clnt_sock, (char *)&print_pack, sizeof(PRT_PACKET)) != sizeof(PRT_PACKET))
+				return -1;
 			pindex = 0;
 			memset(&print_pack.data, 0x00, sizeof(print_pack.data));
 			cnt = 0;
@@ -105,19 +108,22 @@ int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 		if(print_pack.cmd == CMD_USER_ERR)
 		{
 			print_pack.data_num = cnt;
-			Send_packet(clnt_sock, (char *)&print_pack, sizeof(PRT_PACKET));
+
+			if(Send_packet(clnt_sock, (char *)&print_pack, sizeof(PRT_PACKET)) != sizeof(PRT_PACKET))
+				return -1;
 		}
 	}
 	return 0;
 }
 
+//전송 된 packet size 확인
 int Data_mng::Send_packet(int sock, char *buf, int len)
 {
 	int sresult = 0;
 	char *ptr = buf;
 	int sleft = len;
 
-	while (sleft > 0)
+	while (sleft > 0)		//전송할 바이트 수가 0이 될 때까지 send()
 	{
 		sresult = send(sock, ptr, sleft, 0);
 
@@ -125,11 +131,10 @@ int Data_mng::Send_packet(int sock, char *buf, int len)
 			continue;
 		else if (sresult == 0)
 			break;
-//		else if(sresult != sizeof(PRT_PACKET))
-//			cout << "[RESULT] " << sresult << endl;
 
 		sleft -= sresult;
 		ptr += sresult;
+		usleep(10);
 	}
 	return (len-sleft);
 }
