@@ -162,10 +162,28 @@ int CUser::Parsing_data()
 // Client로 Packet 보내기
 int CUser::Send_data(PACKET send_pack)
 {
- 	if(send(m_clnt_sock, (char*) &send_pack, sizeof(PACKET), 0) == -1)
+	int sresult = 0;
+	char *ptr = (char*) &send_pack;
+	int sleft = sizeof(PACKET);
+
+	while (sleft > 0) {
+		sresult = send(m_clnt_sock, ptr, sleft, 0);
+
+		if (sresult == -1)
+			continue;
+		else if (sresult == 0)
+			break;
+//		else if (sresult != sizeof(PACKET))
+//			cout << "[RESULT] " << sresult << endl;
+
+		sleft -= sresult;
+		ptr += sresult;
+	}
+	return 0;
+ 	/*if(send(m_clnt_sock, (char*) &send_pack, sizeof(PACKET), 0) == -1)
  		while(send(m_clnt_sock, (char*) &send_pack, sizeof(PACKET), 0) == -1)
 //		return ERR;
-	return 0;
+	return 0;*/
 }
 
 int CUser::Find_packet()

@@ -71,7 +71,6 @@ int main(int argc, char *argv[])
 	{
 		if(recv(sock, (char*) &pack, sizeof(PACKET), MSG_WAITALL) == -1)
 			while(recv(sock, (char*) &pack, sizeof(PACKET), MSG_WAITALL) == -1);
-//		cout << "recv : " << pack.body.cmd << ", " << pack.body.data << endl;
 		//Command 처리
 		switch (pack.body.cmd) {
 		case CMD_USER_LOGIN_RESULT:

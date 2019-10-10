@@ -91,19 +91,6 @@ int Data_mng::Send_data_list(int clnt_sock, list<string> *data_list)
 		{
 			print_pack.data_num = cnt;
 			Send_packet(clnt_sock, (char *)&print_pack, sizeof(PRT_PACKET));
-		/*	if (send(clnt_sock, (char*) &print_pack, sizeof(PRT_PACKET), 0) == -1)
-			{
-				cout << "[ERROR] client " << clnt_sock << ": send() error" << endl;
-				while(send(clnt_sock, (char*) &print_pack, sizeof(PRT_PACKET), 0) == -1);
-				cout << "[SUCCESS] send() success" << endl;
-			}*/
-
-			/*if(send(clnt_sock, (char*) &print_pack, sizeof(PRT_PACKET), 0) == -1)
-			{
-				cout << "over err" << endl;
-				cout << "[index] pindex: " << pindex << ", datasize: " << send_msg.length() << endl;
-				return -1;
-			}*/
 			pindex = 0;
 			memset(&print_pack.data, 0x00, sizeof(print_pack.data));
 			cnt = 0;
@@ -138,8 +125,8 @@ int Data_mng::Send_packet(int sock, char *buf, int len)
 			continue;
 		else if (sresult == 0)
 			break;
-		else if(sresult != sizeof(PRT_PACKET))
-			cout << "[RESULT] " << sresult << endl;
+//		else if(sresult != sizeof(PRT_PACKET))
+//			cout << "[RESULT] " << sresult << endl;
 
 		sleft -= sresult;
 		ptr += sresult;
