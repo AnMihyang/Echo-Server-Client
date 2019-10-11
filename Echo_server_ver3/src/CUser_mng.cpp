@@ -144,7 +144,7 @@ void CUser_mng::Close_client(int *fd)
 	cout << "[Closed] client: " << *fd << endl;
 }
 
-//5분마다 현재 접속중인 user(client)목록 출력
+//1분마다 현재 접속중인 user(client)목록 출력
 void * CUser_mng::User_check_thread(void * arg)
 {
 	CUser_mng *cUserMng = (CUser_mng *)arg;
@@ -153,7 +153,7 @@ void * CUser_mng::User_check_thread(void * arg)
 	while(1)
 	{
 		userCnt = 0;
-		sleep(20);
+		sleep(60);
 		cout << endl;
 		cout << "-----------------User Check-----------------" << endl;
 		pthread_mutex_lock(&cUserMng->m_clntlock);

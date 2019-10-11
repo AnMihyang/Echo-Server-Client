@@ -35,28 +35,6 @@ void CUser::User_set(int clnt_fd) {
 	m_clnt_connect = true;        //connect 연결
 }
 
-
-int CUser::Recvn(int s, char *buf, int len, int flags) {
-	int received;
-	char *ptr = buf;
-	int left = len;
-
-	while (left > 0) {
-		received = recv(s, ptr, left, flags);
-//		cout << "   [Client " << m_clnt_sock << "]recv: " << received << endl;
-		if (received == -1)  // socket_error = -1
-			continue;
-		else if (received == 0)
-			break;
-
-		left -= received;
-		ptr += received;
-	}
-
-	return (len - left);
-}
-
-
 // Client로 부터 Packet 받기
 int CUser::Recv_data(list<string> *data_list) {
 	m_data_list = data_list;
@@ -182,6 +160,29 @@ int CUser::Parsing_data()
 	return 0;
 }
 
+//큐에서 패킷 찾기
+int CUser::Find_packet() {
+	memset(&m_parsing_pack, '\0', sizeof(m_parsing_pack));  //m_parsing_pack 초기화
+
+	for (int i = queue.front; queue.rear != NEXT(i); ++i)
+	{
+		if (QUEUE_SIZE < i + sizeof(PACKET))
+			memcpy(&m_parsing_pack, &queue.data[0], sizeof(PACKET));
+		else
+			memcpy(&m_parsing_pack, &queue.data[i], sizeof(PACKET));
+
+		//head, tail 확인
+		if (!strcmp(m_parsing_pack.phead.head, "AA11") && !strcmp(m_parsing_pack.ptail.tail, "11AA"))
+			//data 확인
+			if (m_parsing_pack.phead.datasize == strlen(m_parsing_pack.body.data))
+			{
+				m_Circular_buffer.Dequeue(&queue, i);
+				return 0;
+			}
+	}    //for
+	return ERR;
+}
+
 // Client로 Packet 보내기
 int CUser::Send_data(PACKET send_pack)
 {
@@ -206,25 +207,22 @@ int CUser::Send_data(PACKET send_pack)
 	return 0;
 }
 
-//큐에서 패킷 찾기
-int CUser::Find_packet() {
-	memset(&m_parsing_pack, '\0', sizeof(m_parsing_pack));  //m_parsing_pack 초기화
+int CUser::Recvn(int s, char *buf, int len, int flags) {
+	int received;
+	char *ptr = buf;
+	int left = len;
 
-	for (int i = queue.front; queue.rear != NEXT(i); ++i)
-	{
-		if (QUEUE_SIZE < i + sizeof(PACKET))
-			memcpy(&m_parsing_pack, &queue.data[0], sizeof(PACKET));
-		else
-			memcpy(&m_parsing_pack, &queue.data[i], sizeof(PACKET));
+	while (left > 0) {
+		received = recv(s, ptr, left, flags);
+//		cout << "   [Client " << m_clnt_sock << "]recv: " << received << endl;
+		if (received == -1)  // socket_error = -1
+			continue;
+		else if (received == 0)
+			break;
 
-		//head, tail 확인
-		if (!strcmp(m_parsing_pack.phead.head, "AA11") && !strcmp(m_parsing_pack.ptail.tail, "11AA"))
-			//data 확인
-			if (m_parsing_pack.phead.datasize == strlen(m_parsing_pack.body.data))
-			{
-				m_Circular_buffer.Dequeue(&queue, i);
-				return 0;
-			}
-	}    //for
-	return ERR;
+		left -= received;
+		ptr += received;
+	}
+
+	return (len - left);
 }

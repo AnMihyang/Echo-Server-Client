@@ -15,8 +15,9 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
-
 #include "Packet_define.h"
+
+#define BUF_SIZE 1024000
 
 void Output_menu();											//Menu 출력
 void Message_input_send(int *sock, PACKET pack);			//입력받은 데이터 Server로 Send
@@ -28,11 +29,13 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	int sock;
+	int m_bufopt_adr = BUF_SIZE;
 	char message[MAX_DATA_SIZE];
 
 	struct sockaddr_in serv_adr;
 	string menu;
 	PACKET pack;
+
 
 	//소켓 생성
 	sock=socket(PF_INET, SOCK_STREAM, 0);
@@ -48,6 +51,9 @@ int main(int argc, char *argv[])
 	serv_adr.sin_port = htons(9190);
 
 	cout << "Requesting connection to server..." << endl;
+
+	setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char*)&m_bufopt_adr, BUF_SIZE);
+	setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char*)&m_bufopt_adr, BUF_SIZE);
 
 	//server에 연결 요청 후 에러 처리
 	if(connect(sock, (struct sockaddr*)&serv_adr, sizeof(serv_adr)) == -1)

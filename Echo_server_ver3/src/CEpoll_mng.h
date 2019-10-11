@@ -15,8 +15,7 @@
 #define PORT 9190
 #define ERR -1
 #define EPOLL_SIZE 20
-#define SEND_BUF_SIZE 1024000
-#define RECV_BUF_SIZE 1024000
+#define BUF_SIZE 1024000
 
 class CEpoll_mng {
 protected:
@@ -25,8 +24,7 @@ protected:
 	struct epoll_event m_event;
 	int m_epfd;
 	int m_reuseopt_adr = 1;
-	int m_recvopt_adr = 0;
-	int m_sendopt_adr = 0;
+	int m_bufopt_adr = BUF_SIZE;
 private:
 	struct sockaddr_in m_serv_adr;
 

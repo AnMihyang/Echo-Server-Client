@@ -18,8 +18,7 @@
 
 #include "Packet_define.h"
 
-#define SEND_BUF_SIZE 1024000
-#define RECV_BUF_SIZE 1024000
+#define BUF_SIZE 1024000
 
 void Output_menu();										//Menu 출력
 void Message_input_send(int *sock, PACKET pack);		//입력받은 데이터 Server로 Send
@@ -31,12 +30,11 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	int sock;
+	int m_bufopt_adr = BUF_SIZE;
 
 	struct sockaddr_in serv_adr;
 	int menu;
 	PACKET pack;
-	int m_recvopt_adr = 0;
-	int m_sendopt_adr = 0;
 
 	//소켓 생성
 	sock=socket(PF_INET, SOCK_STREAM, 0);
@@ -53,8 +51,9 @@ int main(int argc, char *argv[])
 
 	cout << "Requesting connection to server..." << endl;
 
-//	setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char*)&m_recvopt_adr, RECV_BUF_SIZE);
-//	setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char*)&m_sendopt_adr, SEND_BUF_SIZE);
+	setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char*)&m_bufopt_adr, BUF_SIZE);
+	setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char*)&m_bufopt_adr, BUF_SIZE);
+
 	//server에 연결 요청 후 에러 처리
 	if(connect(sock, (struct sockaddr*)&serv_adr, sizeof(serv_adr)) == -1)
 		Error_handling(&sock, "connect() error!");

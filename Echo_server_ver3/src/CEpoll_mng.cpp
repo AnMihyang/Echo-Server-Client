@@ -31,8 +31,8 @@ void CEpoll_mng::Set_socket()
 	m_serv_adr.sin_port = htons(PORT);					// 포트 할당
 
 	setsockopt(m_serv_sock, SOL_SOCKET, SO_REUSEADDR, &m_reuseopt_adr, sizeof(m_reuseopt_adr));
-//	setsockopt(m_serv_sock, SOL_SOCKET, SO_RCVBUF, (char*)&m_recvopt_adr, RECV_BUF_SIZE);
-//	setsockopt(m_serv_sock, SOL_SOCKET, SO_SNDBUF, (char*)&m_sendopt_adr, SEND_BUF_SIZE);
+	setsockopt(m_serv_sock, SOL_SOCKET, SO_RCVBUF, (char*)&m_bufopt_adr, BUF_SIZE);
+	setsockopt(m_serv_sock, SOL_SOCKET, SO_SNDBUF, (char*)&m_bufopt_adr, BUF_SIZE);
 
 	//주소 할당
 	if (bind(m_serv_sock, (struct sockaddr*) &m_serv_adr, sizeof(m_serv_adr)) == ERR)
